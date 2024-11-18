@@ -1,12 +1,6 @@
 <template>
   <div>
     <Header></Header>
-    <router-link to="/danh-muc/cong-ty">
-      <FormButton text="test" />
-    </router-link>
-    <router-link to="/danh-muc/trinh-duoc">
-      <FormButton text="home" />
-    </router-link>
     <div class="body-content">
       <router-view v-slot="{Component}">
       <transition name="zoom" mode="out-in">
@@ -19,6 +13,12 @@
 
 <script setup>
 import Header from '@/components/Header.vue'
+import router from '../router';
+import { onMounted } from 'vue';
+
+onMounted(() => {
+  router.push('/dashboard')
+})
 
 </script>
 
@@ -26,7 +26,7 @@ import Header from '@/components/Header.vue'
 .zoom-enter-active, .zoom-leave-active 
 { transition: transform 0.3s; }
 .zoom-enter-from, .zoom-leave-to 
-{ transform: scale(0.3); }
+{ transform: scale(0.1); }
 .zoom-enter-to, .zoom-leave-from 
 { transform: scale(1); }
 .body-content{

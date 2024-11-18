@@ -15,6 +15,11 @@ const router = createRouter({
       },
       children: [
         {
+          path: "dashboard",
+          name: "Dashboard",
+          component: () => import("./pages/Dashboard.vue"),
+        },
+        {
           path: "danh-muc/cong-ty",
           name: "CompanyCategory",
           component: () => import("./pages/danhmuc/congty.vue"),
