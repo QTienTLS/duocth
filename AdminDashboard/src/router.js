@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useToast } from "vue-toast-notification";
+const toast = useToast();
 
 const router = createRouter({
   history: createWebHistory(),
@@ -11,6 +13,19 @@ const router = createRouter({
         title: "Home",
         requiresAuth: true,
       },
+      children: [
+        {
+          path: "danh-muc/cong-ty",
+          name: "CompanyCategory",
+          component: () => import("./pages/danhmuc/congty.vue"),
+        },
+        {
+          path: "danh-muc/trinh-duoc",
+          name: "DrugCategory",
+          component: () => import("./pages/danhmuc/trinhduoc.vue"),
+        },
+
+      ]
     },
     {
       path: "/login",
@@ -36,6 +51,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth) {
     if (localStorage.getItem("token") === null) {
+      toast.error("Bạn cần đăng nhập để sử dụng!");
       next({ name: "Login" });
     } else {
       next();
