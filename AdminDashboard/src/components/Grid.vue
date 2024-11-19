@@ -1077,16 +1077,16 @@ export default {
              
                 template: app.component("filterTemplate", {
                     template: `
-                      <div class="grid-column-filter-item e-input-group e-filterdiv">
+                      <div class="flex relative border-[1px] py-1 border-gray-300 bg-white items-center mx-4 my-2">
                         <input
                           type="text"
                           ref="txtFilterText"
                           @change="filter_Changed"
                           @keyup="filter_Keyup"
                           v-model="filterText"
-                          class="e-input"
+                          class="!border-0"
                         />
-                       
+                      <Icon icon="lets-icons:search-light" class="h-8 w-8 absolute right-0" />
                       </div>
                     `,
                      //<button :class="buttonClearCss" @click="btnClear_Clicked" />
