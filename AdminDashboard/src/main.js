@@ -2,20 +2,51 @@ import { createApp } from 'vue'
 import './assets/css/tailwind.css'
 import 'vue-toast-notification/dist/theme-bootstrap.css';
 import './assets/css/app.scss'
+import './assets/css/grid.scss'
 import App from './App.vue'
 import { createPinia } from 'pinia'
 import router from './router'
 import Input from './components/form/Input.vue';
 import {Icon} from '@iconify/vue';
 import ToastPlugin from 'vue-toast-notification';
+import Vue3Lottie from 'vue3-lottie'
 import Button from './components/form/Button.vue';
+import Loading from './components/Loading.vue';
+import Grid from './components/Grid.vue';
+import {registerLicense } from '@syncfusion/ej2-base';
+import {
+  GridComponent,
+  ColumnsDirective,
+  ColumnDirective,
+  AggregatesDirective,
+  AggregateDirective,
+  VirtualScroll,
+  Sort,
+  Filter,
+  Selection,
+  Resize,
+  Page,
+} from '@syncfusion/ej2-vue-grids'
+import { DropDownListComponent } from '@syncfusion/ej2-vue-dropdowns'
+
 
 const app = createApp(App)
+registerLicense('ORg4AjUWIQA/Gnt2UlhhQlVMfV5AQmBIYVp/TGpJfl96cVxMZVVBJAtUQF1hTX9Sd0xjWn9fdHxXRWRd')
+app.component('ejs-grid', GridComponent)
+app.component('e-columns', ColumnsDirective)
+app.component('ejs-dropdownlist', DropDownListComponent)
+app.component('e-column', ColumnDirective)
+app.component('e-aggregates', AggregatesDirective)
+app.component('e-aggregate', AggregateDirective)
 app.use(createPinia())
 app.component('FormInput', Input)
 app.use(ToastPlugin);
 app.component('Icon', Icon)
+app.use(Vue3Lottie, { name: 'LottieAnimation' })
+app.component('Loading', Loading)
+app.component('DataGrid', Grid)
 app.component('FormButton', Button)
 app.use(router)
 
 app.mount('#app')
+app.provide('grid', [Filter, Selection, Sort, VirtualScroll, Resize, Page])

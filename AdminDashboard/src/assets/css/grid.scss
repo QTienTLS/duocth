@@ -1,0 +1,36 @@
+@import "./material.css";
+
+.e-grid{
+  .e-gridheader{
+    .e-headercell{
+      background-color: rgb(0, 95, 57);
+      color: white;
+    }
+    &.e-lib.e-droppable{
+      padding-right: 6px !important;
+    }
+  }
+}
+.e-mspace{
+  display: none;
+}
+.grid-ext .e-pager .e-pagerdropdown {
+  height: 32px;
+  margin: 0px 6px 17px 0px;
+  width: 70px;
+  // float: left
+}
+
+.grid-ext .e-pager .e-pagerdropdown .e-input-group .e-input[readonly] {
+  color: #4B66FE;
+  text-align: right;
+}
+.e-pagerconstant{
+  margin-bottom: 10px;
+}
+
+.grid-ext .e-pager .e-pagerdropdown .e-input-group {
+  border-radius: 0px;
+  border:1px solid #DDD !important;
+  height: 32px;
+}

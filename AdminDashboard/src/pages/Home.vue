@@ -17,7 +17,9 @@ import router from '../router';
 import { onMounted } from 'vue';
 
 onMounted(() => {
-  router.push('/dashboard')
+  if(router.currentRoute.value.name === 'Home'){
+    router.push({name: 'Dashboard'})
+  }
 })
 
 </script>
