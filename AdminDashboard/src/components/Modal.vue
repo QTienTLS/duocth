@@ -69,9 +69,7 @@ export default {
     }
   },
   watch:{
-    modelValue(val){
-      console.log(val);
-      
+    modelValue(val){  
       if(val && !this.opened){
         this.opened = true
       }
