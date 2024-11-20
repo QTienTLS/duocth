@@ -27,4 +27,14 @@ const props = defineProps({
 const id = `input-${new Date().getTime()}-${Math.floor(Math.random() * 1000)}`;
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+input:-webkit-autofill {
+  background-color: #f0f8ff !important; /* Change this to your desired color */
+  color: #000 !important; /* Adjust text color */
+  transition: background-color 5000s ease-in-out 0s; /* Prevent sudden style changes */
+}
+
+input:-webkit-autofill:focus {
+  background-color: #e6f7ff !important; /* Optional: Different style when focused */
+}
+</style>

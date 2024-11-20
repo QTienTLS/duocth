@@ -39,7 +39,21 @@ export const up = function(knex) {
         });
       }
     });
-  });
+  })
+  .then(()=>{
+    return knex.schema.hasTable('menus').then(function(exists) {
+      if(!exists) {
+        return knex.schema.createTable('menus', function(table) {
+          table.increments('id').primary();
+          table.integer('p_id').unsigned().references('id').inTable('menus').onDelete('CASCADE');
+          table.string('icon');
+          table.string('name').notNullable();
+          table.string('url').notNullable();
+          table.timestamps();
+        });
+      }
+    });
+  })
 };
 
 /**

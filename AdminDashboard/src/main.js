@@ -13,6 +13,9 @@ import Vue3Lottie from 'vue3-lottie'
 import Button from './components/form/Button.vue';
 import Loading from './components/Loading.vue';
 import Grid from './components/Grid.vue';
+import TopButtons from './components/TopButtons.vue';
+import Modal from './components/Modal.vue';
+import Select from './components/form/Select.vue';
 import {registerLicense } from '@syncfusion/ej2-base';
 import {
   GridComponent,
@@ -38,6 +41,9 @@ app.component('ejs-dropdownlist', DropDownListComponent)
 app.component('e-column', ColumnDirective)
 app.component('e-aggregates', AggregatesDirective)
 app.component('e-aggregate', AggregateDirective)
+app.component('TopButtons', TopButtons)
+app.component('TModal', Modal)
+app.component('FormSelect', Select)
 app.use(createPinia())
 app.component('FormInput', Input)
 app.use(ToastPlugin);

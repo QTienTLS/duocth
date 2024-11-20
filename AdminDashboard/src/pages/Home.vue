@@ -1,19 +1,19 @@
 <template>
-  <div>
-    <Header></Header>
-    <div class="body-content">
+    <div class="flex">
+      <SideNav/>
+      <div class="body-content flex-1">
       <router-view v-slot="{Component}">
       <transition name="zoom" mode="out-in">
         <component :is="Component" />
       </transition>
     </router-view>
     </div>
-  </div>
+    </div>
 </template>
 
 <script setup>
-import Header from '@/components/Header.vue'
 import router from '../router';
+import SideNav from '../components/SideNav.vue';
 import { onMounted } from 'vue';
 
 onMounted(() => {
@@ -31,7 +31,4 @@ onMounted(() => {
 { transform: scale(0.1); }
 .zoom-enter-to, .zoom-leave-from 
 { transform: scale(1); }
-.body-content{
-  height: calc(100vh - 4rem);
-}
 </style>

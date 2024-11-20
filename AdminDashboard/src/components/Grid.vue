@@ -51,16 +51,9 @@
 </template>
 <script>
 import Pagination from "./Pagination/index.vue";
-// import FilterTemplate from "./FilterTemplate";
 
 import { createApp } from "vue";
 const app = createApp();
-//var filterTemplate = app.component("FilterTemplate", FilterTemplate);
-
-/**
- * @summary: Control dùng chung trên site, cá nhân vui lòng không update ở đây để tránh ảnh hưởng chung đến control.
- * @author: IT3.Web2
- */
 import {
   Sort,
   Filter,
@@ -1074,8 +1067,7 @@ export default {
     filterTemplate(parent) {
         return function () {
             return {
-             
-                template: app.component("filterTemplate", {
+                template: app.component(`filterTemplate-${Math.random().toString(36).substring(7)}`, {
                     template: `
                       <div class="flex relative border-[1px] py-1 border-gray-300 bg-white items-center mx-4 my-2">
                         <input
@@ -1108,14 +1100,6 @@ export default {
                         //   this.$nextTick(() => this.$refs.txtFilterText.focus()); // this works great, just watch out with going to fast !!!
                         // }, 200);
                       }
-                    },
-                    computed: {
-                      buttonClearCss: function () {
-                        let result = "e-clear-icon";
-                        if (this.filterText == "" || this.filterText == null)
-                          result += " e-clear-icon-hide";
-                        return result;
-                      },
                     },
                     methods: {
                       filter_Changed: function (args) {

@@ -1,6 +1,7 @@
 <template>
   <div class="login h-[100vh] w-[100vw] flex justify-center items-center">
-    <div class="h-[20rem] w-1/3 text-center
+    <Loading v-model="loadingLogin">
+      <div class="h-[20rem] w-[30vw] text-center
     bg-white shadow-lg rounded-lg py-4 px-32 flex flex-col
     ">
       <h2 class="mb-12">Đăng nhập hệ thống</h2>
@@ -10,6 +11,7 @@
       <FormButton class="mt-4 mx-auto" @click="login"  text="Đăng nhập" />
     <!-- </form> -->
     </div>
+    </Loading>
   </div>
 </template>
 
@@ -18,13 +20,18 @@ import { onMounted, onUnmounted, ref } from 'vue'
 import { useAuthStore } from '../stores/auth';
 const authStore = useAuthStore()
 
+const loadingLogin = ref(false)
 const username = ref('')
 const password = ref('')
 const login = async () => {
   try {
+    loadingLogin.value = true
     await authStore.login(username.value, password.value)
   } catch (error) {
     console.log(error)
+  } finally
+  {
+    loadingLogin.value = false
   }
 }
 
