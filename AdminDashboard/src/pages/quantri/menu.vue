@@ -29,23 +29,47 @@
       </template>
       <template #body>
         <div class="p-4">
-          <FormInput icon="gg:menu-grid-o" v-model="menuName" label="Tên danh mục" />
-          <FormInput icon="mdi:emoticon-happy-outline" v-model="menuName" label="Icon" />
-          <div class="info-row">
-            <div class="key">Loại danh mục</div>
-            <div class="value">
-              <FormSelect v-model="menuType" :options="menuTypeOptions" />
-            </div>
-          </div>
+          <FormInput
+            icon="gg:menu-grid-o"
+            v-model="menuName"
+            label="Tên danh mục"
+          />
+          <FormInput
+            icon="mdi:emoticon-happy-outline"
+            v-model="menuName"
+            label="Icon"
+          />
+          <FormSelect
+            label="Loại danh mục"
+            icon="solar:ranking-line-duotone"
+            v-model="menuType"
+            :options="menuTypeOptions"
+          />
+          <FormSelect
+            label="Danh mục cha"
+            v-show="menuType === 2"
+            icon="carbon:parent-child"
+            v-model="parentMenu"
+            :options="listParentMenu"
+          />
+          <FormInput v-model="menuURL" label="URL" icon="line-md:link" />
         </div>
+      </template>
+      <template #footer>
+          <button class="mr-4" @click="openModal = false">Hủy</button>
+          <button 
+          @click="saveClick"
+          class="mr-4">Lưu lại</button>
       </template>
     </TModal>
   </div>
 </template>
 
 <script setup>
-import { createApp, ref, getCurrentInstance } from 'vue';
+import { createApp, ref, getCurrentInstance, computed } from 'vue';
+import { useToast } from 'vue-toast-notification';
 const { ctx } = getCurrentInstance();
+const toast = useToast();
 const app = createApp();
 const listMenu = ref([{ icon: 'ic:baseline-delete' }]);
 
@@ -99,10 +123,41 @@ const grid_columns = [
 ];
 
 const openModal = ref(false);
-const modalTitle = ref('Thêm mới danh mục');
+// ---1: thêm mới, 2: sửa
+const modalMode = ref(1);
+const modalTitle = computed(() => {
+  return modalMode.value === 1 ? 'Thêm mới danh mục' : 'Sửa danh mục';
+});
 const addMenu = () => {
+  modalMode.value = 1;
+  menuName.value = '';
+  menuType.value = '';
+  parentMenu.value = '';
+  menuURL.value = '';
   openModal.value = true;
 };
+const menuTypeOptions = [
+  { id: 1, text: 'Danh mục cha' },
+  { id: 2, text: 'Danh mục con' },
+];
+const menuType = ref('');
+const menuName = ref('');
+const parentMenu = ref('');
+const listParentMenu = ref([]);
+const menuURL = ref('');
+const saveClick = () => {
+  if(modalMode.value === 1)
+  addSaveMenu();
+};
+const checkInputMenu = () => {
+  if(!menuName.value) {
+    toast.error('Vui lòng nhập tên danh mục');
+    return false;
+  }
+}
+const addSaveMenu = async () => {
+  if(!checkInputMenu()) return;
+}
 </script>
 
 <style lang="scss" scoped></style>

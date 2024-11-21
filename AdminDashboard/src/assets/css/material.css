@@ -6,7 +6,11 @@
   font-size: 12px;
   font-weight: normal;
 }
-
+.e-control.e-tooltip{
+  font-size: 16px;
+  font-family: inherit;
+  font-weight: 300;
+}
 .e-error {
   color: #f44336;
 }

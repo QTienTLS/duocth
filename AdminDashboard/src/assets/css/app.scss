@@ -25,6 +25,8 @@ body {
   height: 40px;
   width: 100%;
   position: relative;
+  margin-bottom: 2rem;
+  margin-top: 1rem;
   label {
     font-size: 17px;
     font-weight: normal;
@@ -112,6 +114,7 @@ h2 {
 .info-row{
   display: flex;
   flex-direction: column;
+  margin-bottom: 20px;
   .key{
     font-weight: 600;
     color: #022213;

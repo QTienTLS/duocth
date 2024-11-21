@@ -20,7 +20,9 @@
         </div>
         <div class="modal-panel__footer">
         <slot name="footer">
-          <button @click="closeModal">Đóng</button>
+          <button
+          class="select-none"
+          @click="closeModal">Đóng</button>
         </slot> 
       </div>
         </div>
@@ -79,7 +81,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 html,
 body {
   &.modal-active {

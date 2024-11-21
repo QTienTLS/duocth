@@ -30,6 +30,8 @@ import {
   Resize,
   Page,
 } from '@syncfusion/ej2-vue-grids'
+import { CheckBoxComponent as EjsCheckBox } from "@syncfusion/ej2-vue-buttons";
+import { TooltipComponent as EjsTooltip  } from "@syncfusion/ej2-vue-popups";
 import { DropDownListComponent } from '@syncfusion/ej2-vue-dropdowns'
 
 
@@ -40,6 +42,8 @@ app.component('e-columns', ColumnsDirective)
 app.component('ejs-dropdownlist', DropDownListComponent)
 app.component('e-column', ColumnDirective)
 app.component('e-aggregates', AggregatesDirective)
+app.component('e-checkbox', EjsCheckBox)
+app.component('e-tooltip', EjsTooltip)
 app.component('e-aggregate', AggregateDirective)
 app.component('TopButtons', TopButtons)
 app.component('TModal', Modal)
