@@ -1,8 +1,8 @@
 <template>
   <div class="relative mt-4 mb-8">
-    <label class="absolute flex items-center text-[#a1a1a1] text-[17px] font-normal h-full left-[10px]
+    <label class="absolute flex items-center  font-normal left-[10px]
     transition-all duration-300"
-    :class="model||model.length>0?'text-[13px] text-[#006c40] top-[-12px] h-[20px] bg-white z-10 px-2':''"
+    :class="model!=null&&(model&&mode=='single'||model.length>0)?'text-[13px] text-[#006c40] top-[-12px] h-[20px] bg-white z-10 px-2':'text-[#a1a1a1] h-full  text-[17px]'"
     >
       <Icon :icon="icon" class="mr-2" v-show="icon" />
       <span>{{ label }}</span>
@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineModel, ref, computed } from 'vue';
+import {  ref, computed } from 'vue';
 import { onClickOutside } from '@vueuse/core';
 
 const props = defineProps({

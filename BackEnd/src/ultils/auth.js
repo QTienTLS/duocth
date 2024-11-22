@@ -10,8 +10,8 @@ class AuthUltil{
   static async verifyToken(token){
     return await jwt.verify(token, process.env.JWT_SECRET);
   }
-  static async decodeToken(token){
-    await jwt.verify(token, process.env.JWT_SECRET); // Check if token is valid
+  static async decodeToken(token, secret){
+    await jwt.verify(token, secret?secret:process.env.JWT_SECRET); // Check if token is valid
     return await jwt.decode(token);
   }
 }

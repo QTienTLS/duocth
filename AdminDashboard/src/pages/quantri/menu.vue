@@ -17,7 +17,8 @@
             <DataGrid
               :dataSource="listMenu"
               :columns="grid_columns"
-              panelDataHeight="200px"
+              panelDataHeight="500px"
+              :showSTT="true"
             />
           </div>
         </div>
@@ -36,7 +37,7 @@
           />
           <FormInput
             icon="mdi:emoticon-happy-outline"
-            v-model="menuName"
+            v-model="menuIcon"
             label="Icon"
           />
           <FormSelect
@@ -66,12 +67,13 @@
 </template>
 
 <script setup>
-import { createApp, ref, getCurrentInstance, computed } from 'vue';
+import { createApp, ref, getCurrentInstance, computed, onMounted, onUnmounted } from 'vue';
 import { useToast } from 'vue-toast-notification';
+import axios from '@/plugins/axiosPlugin';
 const { ctx } = getCurrentInstance();
 const toast = useToast();
 const app = createApp();
-const listMenu = ref([{ icon: 'ic:baseline-delete' }]);
+const listMenu = ref([]);
 
 const iconTemplate = (parent) => {
   return function () {
@@ -89,16 +91,11 @@ const iconTemplate = (parent) => {
 };
 const grid_columns = [
   {
-    fieldName: 'stt',
-    headerText: 'STT',
-    width: '50px',
-    textAlign: 'center',
+    fieldName: 'p_name',
+    headerText: 'Danh mục cha',
+    width: '120px',
+    // isGroupedColumn: true,
   },
-  // {
-  //   fieldName: 'parent',
-  //   headerText: 'Danh mục cha',
-  //   isGroupedColumn: true,
-  // },
   {
     fieldName: 'id',
     headerText: 'ID',
@@ -108,6 +105,11 @@ const grid_columns = [
   {
     fieldName: 'name',
     headerText: 'Tên danh mục',
+    width: '120px',
+  },
+  {
+    fieldName: 'url',
+    headerText: 'URL',
     width: '120px',
   },
   {
@@ -125,6 +127,7 @@ const grid_columns = [
 const openModal = ref(false);
 // ---1: thêm mới, 2: sửa
 const modalMode = ref(1);
+const menuIcon = ref('');
 const modalTitle = computed(() => {
   return modalMode.value === 1 ? 'Thêm mới danh mục' : 'Sửa danh mục';
 });
@@ -134,6 +137,7 @@ const addMenu = () => {
   menuType.value = '';
   parentMenu.value = '';
   menuURL.value = '';
+  menuIcon.value = '';
   openModal.value = true;
 };
 const menuTypeOptions = [
@@ -149,14 +153,55 @@ const saveClick = () => {
   if(modalMode.value === 1)
   addSaveMenu();
 };
+onUnmounted(() => {
+  console.log('unmount');
+  
+});
 const checkInputMenu = () => {
   if(!menuName.value) {
     toast.error('Vui lòng nhập tên danh mục');
     return false;
   }
+  return true;
 }
+const getListMenu = async () => {
+  let res = await axios.get('/system/get-menus');
+  listMenu.value = res.data.data.map((item, index) => {
+    return {
+      ...item,
+      p_name: item.p_name || 'Không có',
+      stt: index + 1,
+    };
+  });
+};
+const getParentMenus = async () => {
+  let res = await axios.get('/system/get-parent-menus');
+  listParentMenu.value = res.data.data.map((item) => {
+    return {
+      id: item.id,
+      text: item.name,
+    };
+  });
+};
+onMounted(() => {
+  getListMenu();
+  getParentMenus();
+});
 const addSaveMenu = async () => {
   if(!checkInputMenu()) return;
+  const data = {
+    name: menuName.value,
+    type: menuType.value,
+    parent: parentMenu.value,
+    url: menuURL.value,
+    icon: menuIcon.value,
+  };
+  let res = await axios.post('/system/add-menu', data);
+  if(res.data.code == 'dth-200'){
+    toast.success('Thêm mới danh mục thành công');
+    openModal.value = false;
+    getListMenu();
+  }
 }
 </script>
 

@@ -16,6 +16,26 @@ class AuthService {
     const {token, refreshToken} = await AuthUltil.createToken({id: user.id});
     return {token, refreshToken, username: user.username};
   }
+  static async getUserInfo(id){
+    let user = await db.raw('SELECT get_user_info(?) AS user_info', [id]);
+    user = user[0][0].user_info;
+    if(!user)
+      throw new NotFoundError('Không tìm thấy tài khoản');
+    return user;
+  }
+  static async refreshToken(token){
+    if(!token)
+      throw new NotFoundError('Không tìm thấy refreshToken');
+    const decoded = await AuthUltil.decodeToken(token,'duocth-refresh');
+    const id = decoded.id;
+    if(!id)
+      throw new NotFoundError('Token không hợp lệ');
+    const user = await AuthService.getUserInfo(id);
+    if(!user)
+      throw new NotFoundError('Không tìm thấy thông tin user');
+    const {token: newToken,refreshToken: newRefreshToken} = await AuthUltil.createToken({id: user.id});
+    return {token: newToken, refreshToken: newRefreshToken, username: user.username};
+  }
 }
 
 export default AuthService;

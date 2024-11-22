@@ -810,12 +810,12 @@ export default {
       }
     },
     grid_RowDeselected: function (args) {
-      let records = this.getSelectedRecords();
-      if (this.grid.selectionSettings.type == "Multiple") {
-        this.$emit("selectedItemsChanged", this.getSelectedValues(records));
+      // let records = this.getSelectedRecords();
+      // if (this.grid.selectionSettings.type == "Multiple") {
+      //   this.$emit("selectedItemsChanged", this.getSelectedValues(records));
         //this.$emit("selectedRowChanged", records.length > 0 ? records[0] : null);
-      }
-      this.$emit("rowDeselected", args);
+      // }
+      // this.$emit("rowDeselected", args);
     },
     grid_ActionBegin: function (args) {
       //if (args.action == "filter" || args.action == "clearFilter") {

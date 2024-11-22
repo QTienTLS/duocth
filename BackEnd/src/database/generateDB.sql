@@ -49,6 +49,64 @@ END$$
 
 DELIMITER ;
 
+-- function get menus
+DELIMITER $$
+CREATE FUNCTION `get_menus`() RETURNS JSON
+DETERMINISTIC
+BEGIN
+    DECLARE menus JSON;
+    SELECT JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'id', m.id,
+            'p_id', m.p_id,
+            'name', m.name,
+            'url', m.url,
+            'icon', m.icon
+        )
+    ) INTO menus
+    FROM menus m
+    WHERE m.active = 1;
+
+    RETURN menus;
+END$$
+
+DELIMITER ;
+
+-- get menu tree
+DELIMITER $$
+CREATE FUNCTION `get_menu_tree`() RETURNS JSON
+DETERMINISTIC
+BEGIN 
+    DECLARE menu_tree JSON;
+    SELECT JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'id', m.id,
+            'p_id', m.p_id,
+            'name', m.name,
+            'url', m.url,
+            'icon', m.icon,
+            'children', (
+              SELECT JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'id', m1.id,
+                    'p_id', m1.p_id,
+                    'name', m1.name,
+                    'url', m1.url,
+                    'icon', m1.icon
+                )
+              )
+              FROM menus m1
+              WHERE m1.p_id = m.id AND m1.active = 1
+            ) 
+        )
+    ) INTO menu_tree
+    FROM menus m
+    WHERE m.p_id is null AND m.active = 1;
+
+    RETURN menu_tree;
+END$$
+DELIMITER ;
+
 
 
 
@@ -58,6 +116,7 @@ CREATE TABLE IF NOT EXISTS `menus` (
   `name` varchar(255) NOT NULL,
   `url` varchar(255) NOT NULL,
   `icon` varchar(255) DEFAULT NULL,
+  `active` tinyint(1) DEFAULT 1,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),

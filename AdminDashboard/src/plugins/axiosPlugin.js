@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useToast } from 'vue-toast-notification'
 import { useAuthStore } from '../stores/auth'
 
-axios.defaults.baseURL = 'http://localhost:2022/v1'
+axios.defaults.baseURL = 'http://localhost:2022'
 axios.defaults.headers = {
   'Content-Type': 'application/json',
 }
@@ -28,7 +28,23 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   (response) => {
+    const authStore = useAuthStore()
     console.log(`Request to ${response.config.url} took ${Date.now() - response.config.config.start}ms`);
+    //check response code
+    if(response.data.code === 'dth-401'){
+      toast.info('Token hết hạn, đang thử đăng nhập lại !')
+      authStore.silentLogin()
+    }
+    if(response.data.code === 'dth-403'){
+      toast.error('Bạn không có quyền truy cập nội dung này!')
+      authStore.logout()
+    }
+    if(response.data.code === 'dth-404'){
+      toast.error('Không tìm thấy đường dẫn API')
+    }
+    if(response.data.code === 'dth-500'){
+      toast.error('Lỗi hệ thống xảy ra, vui lòng thử lại sau!')
+    }
     return response
   },
   (error) => {

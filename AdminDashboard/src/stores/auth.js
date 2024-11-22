@@ -33,6 +33,27 @@ export const useAuthStore = defineStore('auth', {
       else{
         toast.error(res.data.message);
       }
+    },
+    async silentLogin(){
+      let token = localStorage.getItem('refreshToken');
+      if(!token) token = this.refreshToken;
+      if(!token){
+        toast.error('Không tìm thấy refreshToken, vui lòng đăng nhập lại!');
+        this.logout();
+      }
+      let res = await axios.post('/auth/refresh-token', {refreshToken: token});
+      if(res.data.code === 'dth-200'){
+        toast.success(`Đăng nhập thành công! Chào mừng quay lại ${res.data.data.username}`);
+        this.token = res.data.data.token;
+        this.refreshToken = res.data.data.refreshToken;
+        this.username = res.data.data.username;
+        localStorage.setItem('token', res.data.data.token);
+        localStorage.setItem('refreshToken', res.data.data.refreshToken);
+      }
+      else{
+        toast.error(res.data.message);
+        this.logout();
+      }
     }
   }
 });
