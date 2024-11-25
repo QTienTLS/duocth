@@ -18,6 +18,7 @@ import Modal from './components/Modal.vue';
 import Select from './components/form/Select.vue';
 import {registerLicense } from '@syncfusion/ej2-base';
 import GridButton from './components/GridButton.vue';
+import ImageInput from './components/form/ImageInput.vue';
 import {
   GridComponent,
   ColumnsDirective,
@@ -49,6 +50,7 @@ app.component('e-aggregate', AggregateDirective)
 app.component('GridButton', GridButton)
 app.component('TopButtons', TopButtons)
 app.component('TModal', Modal)
+app.component('ImageInput', ImageInput)
 app.component('FormSelect', Select)
 app.use(createPinia())
 app.component('FormInput', Input)

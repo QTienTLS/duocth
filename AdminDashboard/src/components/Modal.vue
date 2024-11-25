@@ -52,6 +52,7 @@ export default {
       default: 'fit-content'
     }
   },
+  emits: ['update:modelValue'],
   mounted() {
     const modal = this.$refs.modal
     modal.style.width = this.modalWidth
@@ -60,11 +61,10 @@ export default {
   methods: {
     closeModal() {
       console.log('close');
-      
       this.$emit('update:modelValue', false)
     },
     closeOnOutside(e) {
-      const modal = document.querySelector('.modal')
+      const modal = this.$refs.modal
       if(!modal.contains(e.target)){
         this.closeModal()
       }

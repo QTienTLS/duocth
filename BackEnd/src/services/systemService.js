@@ -67,6 +67,34 @@ class SystemService{
     });
     return result;
   }
+  static async addCompany(data){
+    const result = await db('companies').insert({
+      name: data.name,
+      image: data.image,
+      full_name: data.fullName,
+      created_at: new Date(),
+    });
+    return result;
+  }
+  static async getCompanies(){
+    try {
+      const companies = await db.raw('SELECT get_companies() AS companies');
+      return companies[0][0].companies;
+    } catch (error) {
+      throw new BadRequestError(error.message);
+    }
+  }
+  static async editCompany(data){
+    const result = await db.raw('SELECT edit_company(?,?,?,?)', [data.id, data.name,data.fullName, data.image]);
+    return result;
+  }
+  static getCompany(id){
+    return db('companies').select('*').where('id', id).first();
+  }
+  static async deleteCompany(id){
+    const r = await db.raw('SELECT delete_company(?) as oldImage', [id]);
+    return r[0][0].oldImage;
+  }
 }
 
 export default SystemService;

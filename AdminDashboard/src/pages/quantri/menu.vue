@@ -78,12 +78,39 @@ const listMenu = ref([]);
 const iconTemplate = (parent) => {
   return function () {
     return {
-      template: app.component('iconTemplate', {
+      template: app.component('',{
         template: `<Icon :icon="data.icon" class="mx-auto" height="1rem" width="1rem" />`,
         data() {
           return {
             parent: parent,
           };
+        },
+      }),
+    };
+  };
+};
+const actionTemplate = (parent) => {
+  return function () {
+    return {
+      template: app.component(``, {
+        template: `
+        <div class="flex justify-center gap-4">
+          <GridButton title="Chỉnh sửa" icon="ri:edit-2-line" type="primary" @click="editRow(data)"></GridButton>
+          <GridButton title="Xóa" icon="material-symbols:delete-sharp" type="danger" @click="deleteRow(data)"></GridButton>
+        </div>
+      `,
+        data() {
+          return {
+            parent: parent,
+          };
+        },
+        methods: {
+          editRow(data) {
+            editRow(data);
+          },
+          deleteRow(data) {
+            deleteRow(data);
+          },
         },
       }),
     };
@@ -121,6 +148,7 @@ const grid_columns = [
   {
     headerText: 'Hành động',
     width: '100px',
+    template: actionTemplate(ctx),
   },
 ];
 
@@ -138,6 +166,15 @@ const addMenu = () => {
   parentMenu.value = '';
   menuURL.value = '';
   menuIcon.value = '';
+  openModal.value = true;
+};
+const editRow = (data) => {
+  modalMode.value = 2;
+  menuName.value = data.name;
+  menuType.value = data.p_id? 2 : 1;
+  parentMenu.value = data.p_id;
+  menuURL.value = data.url;
+  menuIcon.value = data.icon;
   openModal.value = true;
 };
 const menuTypeOptions = [

@@ -5,7 +5,7 @@
       <div class="box-form">
         <div class="info-row">
           <div class="key">
-            Đơn vị
+            Đơn vị tính
             <ul class="listButton">
               <li @click="openAdd">
                 <Icon icon="material-symbols:add" /> Thêm mới

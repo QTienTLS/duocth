@@ -15,4 +15,8 @@ router.post('/add-unit', asyncHandler(systemConTroller.addUnit));
 router.get('/get-unit-list', asyncHandler(systemConTroller.getUnitList));
 router.post('/edit-unit', asyncHandler(systemConTroller.editUnit));
 router.post('/delete-unit', asyncHandler(systemConTroller.deleteUnit));
+router.post('/add-company', asyncHandler(systemConTroller.addCompany));
+router.get('/get-companies', asyncHandler(systemConTroller.getCompanies));
+router.post('/edit-company', asyncHandler(systemConTroller.editCompany));
+router.post('/delete-company', asyncHandler(systemConTroller.deleteCompany));
 export default router;
