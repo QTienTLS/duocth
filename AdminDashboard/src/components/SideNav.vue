@@ -1,10 +1,10 @@
 <template>
-  <div
-    class="bg-primary h-[100vh] flex flex-col p-4 text-white relative transition-all duration-300"
+    <div
+    class="bg-primary h-[100vh] flex flex-col fixed top-0 p-4 text-white  transition-all duration-300"
     :class="open ? 'w-64' : 'w-24'"
   >
     <div
-      @click="open = !open"
+      @click="toggleSidebar"
       class="h-24 gap-2 flex items-center w-full cursor-pointer relative overflow-x-hidden"
       :class="
         open
@@ -33,11 +33,13 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch, watchEffect } from 'vue';
 import logo from '@/assets/image/logo-active.png';
 import axios from '@/plugins/axiosPlugin';
 import MenuItem from './MenuItem.vue';
+import { useSystemStore } from '../stores/system';
 const menu = ref([]);
+const systemStore = useSystemStore();
 const getMenuTree = async () => {
   const res = await axios.get('/system/get-menu-tree');
   menu.value = res.data.data.map((item) => {
@@ -53,6 +55,17 @@ onMounted(() => {
   getMenuTree();
 });
 
-const open = ref(false);
-</script>
 
+const open = computed({
+  get: () => systemStore.sidebarOpen,
+  set: (value) => {
+    systemStore.setSidebarOpen(value);
+  },
+});
+const toggleSidebar = () => {
+  open.value = !open.value;
+  console.log(systemStore.sidebarOpen);
+  
+};
+</script>
+     

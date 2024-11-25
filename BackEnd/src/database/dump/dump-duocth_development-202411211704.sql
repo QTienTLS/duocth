@@ -190,23 +190,36 @@ UNLOCK TABLES;
 /*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` FUNCTION `get_user_info`(user_id INT) RETURNS json
     DETERMINISTIC
-BEGIN
-    DECLARE user_info JSON;
-    SELECT JSON_OBJECT(
-        'id', u.id,
-        'username', u.username,
-        'role', r.name
-    ) INTO user_info
-    FROM users u
-    JOIN user_roles ur ON u.id = ur.user_id
-    JOIN roles r ON ur.role_id = r.id
-    WHERE u.id = user_id;
-
-    RETURN user_info;
-END ;;
+BEGIN
+
+    DECLARE user_info JSON;
+
+    SELECT JSON_OBJECT(
+
+        'id', u.id,
+
+        'username', u.username,
+
+        'role', r.name
+
+    ) INTO user_info
+
+    FROM users u
+
+    JOIN user_roles ur ON u.id = ur.user_id
+
+    JOIN roles r ON ur.role_id = r.id
+
+    WHERE u.id = user_id;
+
+
+
+    RETURN user_info;
+
+END $$
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;

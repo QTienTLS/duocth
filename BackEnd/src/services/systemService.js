@@ -40,6 +40,33 @@ class SystemService{
       throw new BadRequestError(error.message);
     }
   }
+  static async addUnit(data){
+    if(!data.name) throw new BadRequestError('Tên đơn vị không được để trống');
+    let result = await db.raw('CALL add_unit(?)', [data.name]);
+    return result;
+  }
+  static async getUnitList(){
+    try {
+      const units = await db.raw('SELECT get_units() AS units');
+      return units[0][0].units;
+    } catch (error) {
+      throw new BadRequestError(error.message);
+    }
+  }
+  static async editUnit(data){
+    const result = await db('units').where('id', data.id).update({
+      name: data.name,
+      updated_at: new Date(),
+    });
+    return result;
+  }
+  static async deleteUnit(data){
+    const result = await db('units').where('id', data.id).update({
+      active: 0,
+      updated_at: new Date(),
+    });
+    return result;
+  }
 }
 
 export default SystemService;

@@ -49,7 +49,7 @@ export default {
     },
     modalHeight: {
       type: String,
-      default: '300px'
+      default: 'fit-content'
     }
   },
   mounted() {
@@ -131,7 +131,7 @@ body {
       display: inline-block;
       border-radius: 3px;
       min-width: 700px;
-      min-height: 300px;
+      // min-height: 300px;
       max-height: 90%;
       max-width: 95%;
       font-weight: 300;

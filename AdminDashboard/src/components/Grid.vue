@@ -1067,7 +1067,7 @@ export default {
     filterTemplate(parent) {
         return function () {
             return {
-                template: app.component(`filterTemplate-${Math.random().toString(36).substring(7)}`, {
+                template: app.component(`filterTemplate`, {
                     template: `
                       <div class="flex relative border-[1px] py-1 border-gray-300 bg-white items-center mx-4 my-2">
                         <input

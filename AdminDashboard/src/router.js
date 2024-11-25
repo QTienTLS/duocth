@@ -28,10 +28,15 @@ const router = createRouter({
               component: () => import('./pages/danhmuc/congty.vue'),
             },
             {
-              path: 'trinh-duoc',
+              path: 'nha-phan-phoi',
               name: 'DrugCategory',
               component: () => import('./pages/danhmuc/trinhduoc.vue'),
             },
+            {
+              path: 'don-vi',
+              name: 'UnitCategory',
+              component: () => import('./pages/danhmuc/donvi.vue'),
+            }
           ],
         },
         {

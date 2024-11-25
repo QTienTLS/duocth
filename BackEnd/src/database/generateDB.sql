@@ -122,3 +122,39 @@ CREATE TABLE IF NOT EXISTS `menus` (
   PRIMARY KEY (`id`),
   CONSTRAINT `menus_p_id_foreign` FOREIGN KEY (`p_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE
 )
+
+DROP IF EXISTS TABLE `units`;
+
+CREATE TABLE IF NOT EXISTS `units` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL UNIQUE,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+)
+
+DELIMITER $$
+CREATE FUNCTION `get_units`() RETURNS JSON
+DETERMINISTIC
+BEGIN 
+    DECLARE units JSON;
+    SELECT JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'id', u.id,
+            'name', u.name
+        )
+    ) INTO units
+    FROM units u;
+    RETURN units;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE `add_unit`(unit_name VARCHAR(255)) RETURNS INT
+DETERMINISTIC
+BEGIN 
+    INSERT INTO units(name, created_at, updated_at) VALUES(unit_name, NOW(), NOW());
+    RETURN 1;
+    
+END$$
+DELIMITER ;
