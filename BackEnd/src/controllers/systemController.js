@@ -26,6 +26,15 @@ class SystemController{
     const result = await SystemService.addMenu(data);
     return new OK('Thêm menu thành công').send(res);
   }
+  async editMenu(req, res){
+    let data = req.body;
+    if(data.type === 1) {
+      data.parentId = null;
+    }
+    else data.parentId = data.parent;
+    const result = await SystemService.editMenu(data);
+    return new OK('Sửa menu thành công').send(res);
+  }
   async getMenus(req, res){
     const result = await SystemService.getMenus();
     return new OK('Lấy danh sách menu thành công', result).send(res);
@@ -107,6 +116,53 @@ class SystemController{
       fs.unlinkSync(path.resolve(__dirname, '../public' + company));
     }
     return new OK('Xóa công ty thành công', company).send(res);
+  }
+  async getDistributors(req, res){
+    const result = await SystemService.getDistributors();
+    return new OK('Lấy danh sách nhà phân phối thành công', result).send(res);
+  }
+  async addDistributor(req, res){
+    let data = req.body;
+    const result = await SystemService.addDistributor(data);
+    return new OK('Thêm nhà phân phối thành công', result).send(res);
+  }
+  async editDistributor(req, res){
+    let data = req.body;
+    if(!data.id || !data.name) throw BadRequestError('Thiếu thông tin cần thiết');
+    const result = await SystemService.editDistributor(data);
+    return new OK('Sửa nhà phân phối thành công', result).send(res);
+  }
+  async deleteDistributor(req, res){
+    let data = req.body;
+    if(!data.id) throw BadRequestError('Thiếu thông tin cần thiết');
+    const result = await SystemService.deleteDistributor(data.id);
+    return new OK('Xóa nhà phân phối thành công', result).send(res);
+  }
+  async addType(req, res){
+    let data = req.body;
+    const result = await SystemService.addType(data);
+    return new OK('Thêm loại thuốc thành công', result).send(res);
+  }
+  async getTypes(req, res){
+    const {level} = req.body;
+    const result = await SystemService.getTypes(level);
+    return new OK('Lấy danh sách loại thuốc thành công', result).send(res);
+  }
+  async editType(req, res){
+    let data = req.body;
+    if(!data.id || !data.name) throw BadRequestError('Thiếu thông tin cần thiết');
+    const result = await SystemService.editType(data);
+    return new OK('Sửa loại thuốc thành công', result).send(res);
+  }
+  async getTypesTree(req, res){
+    const result = await SystemService.getTypesTree();
+    return new OK('Lấy danh sách loại thuốc theo cây thành công', result).send(res);
+  }
+  async deleteType(req, res){
+    let data = req.body;
+    if(!data.id) throw BadRequestError('Thiếu thông tin cần thiết');
+    const result = await SystemService.deleteType(data.id);
+    return new OK('Xóa loại thuốc thành công', result).send(res);
   }
 }
 

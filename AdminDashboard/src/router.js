@@ -36,6 +36,11 @@ const router = createRouter({
               path: 'don-vi',
               name: 'UnitCategory',
               component: () => import('./pages/danhmuc/donvi.vue'),
+            },
+            {
+              path: 'loai-thuoc',
+              name: 'DrugTypeCategory',
+              component: () => import('./pages/danhmuc/phanloai.vue'),
             }
           ],
         },

@@ -72,7 +72,7 @@ const open = defineModel('open');
 const toggleOpen = () => {
   open.value = !open.value;
 }
-const fullHeight = props.menu.children.length * 48 + 32;
+const fullHeight = props.menu.children?props.menu.children.length * 48 + 32:0;
 const panelChildren = ref(null);
 watch(open, (value) => {
   if (value) {
@@ -84,6 +84,7 @@ watch(open, (value) => {
   }
 })
 const isContainActiveMenu = () => {
+  if(!props.menu.children) return false;
   return props.menu.children.some((item) => item.url === router.currentRoute.value.path);
 }
 onMounted(() => { 

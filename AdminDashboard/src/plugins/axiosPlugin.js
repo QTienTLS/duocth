@@ -42,9 +42,9 @@ axios.interceptors.response.use(
     if(response.data.code === 'dth-404'){
       toast.error('Không tìm thấy đường dẫn API')
     }
-    if(response.data.code === 'dth-500'){
-      toast.error('Lỗi hệ thống xảy ra, vui lòng thử lại sau!')
-    }
+    // if(response.data.code === 'dth-500'){
+    //   toast.error('Lỗi hệ thống xảy ra, vui lòng thử lại sau!')
+    // }
     return response
   },
   (error) => {

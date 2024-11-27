@@ -16,6 +16,20 @@ class SystemService{
       throw new BadRequestError(error.message);
     }
   }
+  static async editMenu(data){
+    try {
+      let result = await db('menus').where('id', data.id).update({
+        p_id: data.parentId,
+        name: data.name,
+        url: data.url,
+        icon: data.icon,
+        updated_at: new Date(),
+      });
+      return result;
+    } catch (error) {
+      throw new BadRequestError(error.message);
+    }
+  }
   static async getMenus(){
     try {
       const menus = await db.raw('SELECT get_menus() AS menus');
@@ -94,6 +108,60 @@ class SystemService{
   static async deleteCompany(id){
     const r = await db.raw('SELECT delete_company(?) as oldImage', [id]);
     return r[0][0].oldImage;
+  }
+  static async getDistributors(){
+    return db.select('*').from('distributors').where('active', 1);
+  }
+  static async addDistributor(data){
+    const result = await db('distributors').insert({
+      name: data.name,
+      fullName: data.fullName,
+      created_at: new Date(),
+    });
+    return result;
+  }
+  static async editDistributor(data){
+    const result = await db('distributors').where('id', data.id).update({
+      name: data.name,
+      fullName: data.fullName,
+      updated_at: new Date(),
+    });
+    return result;
+  }
+  static async deleteDistributor(id){
+    const result = await db('distributors').where('id', id).update({
+      active: 0,
+      updated_at: new Date(),
+    });
+    return result;
+  }
+  static async addType(data){
+    const result = await db.raw('CALL add_type(?,?,?,?)', [data.name,data.level,data.parentId?data.parentId:null,data.icon]);
+    return result;
+  }
+  static getTypes(level){
+    return db.select('*').from('types').where({level: level, active: 1});
+  }
+  static async editType(data){
+    const result = await db('types').where('id', data.id).update({
+      name: data.name,
+      level: data.level,
+      p_id: data.parentId,
+      icon: data.icon,
+      updated_at: new Date(),
+    });
+    return result;
+  }
+  static async getTypesTree(){
+    const types = await db.raw('SELECT get_types_tree() AS types');
+    return types[0][0].types;
+  }
+  static async deleteType(id){
+    const result = await db('types').where('id', id).update({
+      active: 0,
+      updated_at: new Date(),
+    });
+    return result;
   }
 }
 

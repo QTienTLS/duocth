@@ -168,8 +168,10 @@ const addMenu = () => {
   menuIcon.value = '';
   openModal.value = true;
 };
+const selectId = ref('');
 const editRow = (data) => {
   modalMode.value = 2;
+  selectId.value = data.id;
   menuName.value = data.name;
   menuType.value = data.p_id? 2 : 1;
   parentMenu.value = data.p_id;
@@ -189,11 +191,29 @@ const menuURL = ref('');
 const saveClick = () => {
   if(modalMode.value === 1)
   addSaveMenu();
+  else editSaveMenu();
 };
 onUnmounted(() => {
   console.log('unmount');
   
 });
+const editSaveMenu = async () => {
+  if(!checkInputMenu()) return;
+  const data = {
+    id: selectId.value,
+    name: menuName.value,
+    type: menuType.value,
+    parent: parentMenu.value,
+    url: menuURL.value,
+    icon: menuIcon.value,
+  };
+  let res = await axios.post('/system/edit-menu', data);
+  if(res.data.code == 'dth-200'){
+    toast.success('Chỉnh sửa danh mục thành công');
+    openModal.value = false;
+    getListMenu();
+  }
+}
 const checkInputMenu = () => {
   if(!menuName.value) {
     toast.error('Vui lòng nhập tên danh mục');

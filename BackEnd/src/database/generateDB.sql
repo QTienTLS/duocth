@@ -169,3 +169,26 @@ CREATE TABLE `companies` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 )
+
+DROP TABLE IF EXISTS `distributors`;
+CREATE TABLE `distributors` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `fullName` varchar(255) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+)
+
+DROP TABLE IF EXISTS `types`;
+CREATE TABLE `types` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `level` int unsigned NOT NULL,
+  `p_id` int unsigned DEFAULT NULL,
+  `icon` varchar(255) DEFAULT 'mdi:pill',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+  CONSTRAINT `types_p_id_foreign` FOREIGN KEY (`p_id`) REFERENCES `types` (`id`) ON DELETE CASCADE
+)

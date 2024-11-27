@@ -46,7 +46,6 @@ const getMenuTree = async () => {
     return {
       ...item,
       open: false,
-      childCount: item.children.length,
     };
   });
 };
