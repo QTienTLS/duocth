@@ -44,9 +44,14 @@ body {
     align-items: center;
     gap: 5px;
   }
-  input {
-    width: 100%;
+  input{
     height: 100%;
+  }
+  textarea{
+    padding-top: 10px;
+  }
+  input, textarea {
+    width: 100%;
     border: 1px solid #c1c1c1;
     border-radius: 5px;
     padding: 0 10px;
@@ -88,9 +93,6 @@ h2 {
   margin-bottom: 20px;
 }
 .page-title{
-  position: fixed;
-  top: 0;
-  // left: 0;
   color: #0F172A;
   width: 100%;
   border-bottom: #006c40 1px solid;
@@ -100,8 +102,34 @@ h2 {
   padding: 0 2rem;
   line-height: 3rem;
 }
+ul.top-button-list{
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  height: 3rem;
+  display: flex;
+  list-style: none;
+  li{
+    border-right: 1px solid #d3d3d3;
+    color: #022213;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    gap: 5px;
+    &:hover{
+      background-color: #022213;
+      color: #fff;
+    }
+    svg{
+      font-size: 1.5rem;
+    }
+  }
+}
 .page-content{
-  margin-top: 3rem;
   padding: 2rem;
 }
 .box-form{

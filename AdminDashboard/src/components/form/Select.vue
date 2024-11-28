@@ -1,7 +1,7 @@
 <template>
   <div class="relative mt-4 mb-8">
     <label class="absolute flex items-center  font-normal left-[10px]
-    transition-all duration-300"
+    transition-all duration-200"
     :class="model!=null&&(model&&mode=='single'||model.length>0)?'text-[13px] text-[#006c40] top-[-12px] h-[20px] bg-white z-10 px-2':'text-[#a1a1a1] h-full  text-[17px]'"
     >
       <Icon :icon="icon" class="mr-2" v-show="icon" />
@@ -23,7 +23,7 @@
       ref="displaySelect"
       >{{ displayValue }}</span>
       <Icon
-        class="absolute top-1/2 transform -translate-y-1/2 right-2 transition-transform transition-300"
+        class="absolute top-1/2 transform -translate-y-1/2 right-2 transition-transform transition-200"
         :class="open ? 'rotate-90' : ''"
         icon="tabler:chevron-right"
         width="1.5em"
@@ -118,13 +118,13 @@ const displayValue = computed(() => {
   border: 1px solid #c1c1c1;
   border-top: none;
   width: 100%;
-  animation: openSelect 0.3s forwards;
+  animation: openSelect 0.2s forwards;
   border-radius: 0 0 5px 5px;
   overflow-y: auto;
   z-index: 9999;
   background-color: white;
   &--close {
-    animation: closeSelect 0.3s forwards;
+    animation: closeSelect 0.2s forwards;
   }
 }
 

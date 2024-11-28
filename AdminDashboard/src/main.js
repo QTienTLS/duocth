@@ -19,6 +19,7 @@ import Select from './components/form/Select.vue';
 import {registerLicense } from '@syncfusion/ej2-base';
 import GridButton from './components/GridButton.vue';
 import ImageInput from './components/form/ImageInput.vue';
+import { DatePickerComponent as EjsDatepicker } from '@syncfusion/ej2-vue-calendars';
 import {
   GridComponent,
   ColumnsDirective,
@@ -35,6 +36,7 @@ import {
 import { CheckBoxComponent as EjsCheckBox } from "@syncfusion/ej2-vue-buttons";
 import { TooltipComponent as EjsTooltip  } from "@syncfusion/ej2-vue-popups";
 import { DropDownListComponent } from '@syncfusion/ej2-vue-dropdowns'
+import TextArea from './components/form/TextArea.vue';
 
 
 const app = createApp(App)
@@ -43,9 +45,11 @@ app.component('ejs-grid', GridComponent)
 app.component('e-columns', ColumnsDirective)
 app.component('ejs-dropdownlist', DropDownListComponent)
 app.component('e-column', ColumnDirective)
+app.component('ejs-datepicker', EjsDatepicker)
 app.component('e-aggregates', AggregatesDirective)
 app.component('e-checkbox', EjsCheckBox)
 app.component('e-tooltip', EjsTooltip)
+app.component('FormTextArea', TextArea)
 app.component('e-aggregate', AggregateDirective)
 app.component('GridButton', GridButton)
 app.component('TopButtons', TopButtons)

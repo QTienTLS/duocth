@@ -50,6 +50,10 @@ export default {
     modalHeight: {
       type: String,
       default: 'fit-content'
+    },
+    static: {
+      type: Boolean,
+      default: true
     }
   },
   emits: ['update:modelValue'],
@@ -64,6 +68,7 @@ export default {
       this.$emit('update:modelValue', false)
     },
     closeOnOutside(e) {
+      if(this.static) return
       const modal = this.$refs.modal
       if(!modal.contains(e.target)){
         this.closeModal()

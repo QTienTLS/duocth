@@ -61,6 +61,10 @@ export default {
           950: '#211604',
         },
       },
+      boxShadow:{
+        'box1': 'rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px',
+        'box2': 'rgba(0, 0, 0, 0.16) 0px 1px 4px'
+      }
     },
   },
   plugins: [],

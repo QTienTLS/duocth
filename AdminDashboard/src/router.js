@@ -15,11 +15,6 @@ const router = createRouter({
       },
       children: [
         {
-          path: 'dashboard',
-          name: 'Dashboard',
-          component: () => import('./pages/Dashboard.vue'),
-        },
-        {
           path: 'danh-muc',
           children: [
             {
@@ -52,8 +47,28 @@ const router = createRouter({
               name: 'Menu',
               component: () => import('./pages/quantri/menu.vue'),
             },
+            {
+              path: 'logging',
+              name: 'Logging',
+              component: () => import('./pages/quantri/logging.vue'),
+            },
+            {
+              path: 'dashboard',
+              name: 'Dashboard',
+              component: () => import('./pages/Dashboard.vue'),
+            },
           ],
         },
+        {
+          path: 'storage',
+          children: [
+            {
+              path: 'product',
+              name: 'Product',
+              component: () => import('./pages/storage/product/product.vue'),
+            }
+          ]
+        }
       ],
     },
     {
