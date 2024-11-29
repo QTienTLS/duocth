@@ -1,8 +1,7 @@
 <template>
-  <div class="input-row mb-4">
+  <div class="input-row">
     <input 
     :value="modelValue"
-    @input="$emit('update:modelValue', $event.target.value)"
     @enter="$emit('enter')"
     :type="type" :id="id" placeholder=" " />
     <label :for="id">
@@ -18,10 +17,10 @@ const props = defineProps({
     type: String,
     default: 'text'
   },
-  modelValue: String,
   default: '',
   icon: String
 })
+const modelValue = defineModel();
 //random id
 const id = `input-${new Date().getTime()}-${Math.floor(Math.random() * 1000)}`;
 </script>

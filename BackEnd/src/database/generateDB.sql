@@ -287,3 +287,83 @@ SELECT
   WHERE t.p_id IS NULL;
   RETURN types_tree;
 END
+
+DROP IF EXISTS TABLE `product_units`;
+CREATE TABLE `product_units` (
+  `product_id` int unsigned NOT NULL,
+  `unit_from_id` int unsigned NOT NULL,
+  `quantity_from` int unsigned NOT NULL,
+  `unit_to_id` int unsigned NOT NULL,
+  `quantity_to` int unsigned NOT NULL,
+  PRIMARY KEY (`product_id`, `unit_from_id`, `unit_to_id`),
+  CONSTRAINT `product_units_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `product_units_unit_from_id_foreign` FOREIGN KEY (`unit_from_id`) REFERENCES `units` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `product_units_unit_to_id_foreign` FOREIGN KEY (`unit_to_id`) REFERENCES `units` (`id`) ON DELETE CASCADE
+)
+
+CREATE PROCEDURE duocth_development.add_product(
+  IN name VARCHAR(255),
+  IN description TEXT,
+  IN images TEXT,
+  IN description_image TEXT,
+  IN company_id INT,
+  IN distributor_id INT,
+  IN type_id INT,
+  IN units TEXT
+)
+BEGIN
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'An error occurred, please try again later';
+  END;
+
+  START TRANSACTION;
+    -- INSERT PRODUCT
+    DECLARE product_id INT;
+    INSERT INTO products(
+      name,
+      description,
+      images,
+      description_image,
+      company_id,
+      distributor_id,
+      type_id,
+      created_at
+    )
+    VALUES(
+      name,
+      description,
+      images,
+      description_image,
+      company_id,
+      distributor_id,
+      type_id,
+      NOW()
+    );
+    SET product_id = LAST_INSERT_ID();
+    DECLARE i INT DEFAULT 0;
+    DECLARE n INT DEFAULT JSON_LENGTH(units);
+    DECLARE unit_json TEXT;
+
+    WHILE i < n DO 
+      SET unit_json = JSON_EXTRACT(units, CONCAT('$[', i, ']'));
+      INSERT INTO product_units(
+        product_id,
+        unit_from_id,
+        quantity_from,
+        unit_to_id,
+        quantity_to
+      )
+      VALUES(
+        product_id,
+        JSON_UNQUOTE(JSON_EXTRACT(unit_json, '$.idFrom')),
+        JSON_UNQUOTE(JSON_EXTRACT(unit_json, '$.quantityFrom')),
+        JSON_UNQUOTE(JSON_EXTRACT(unit_json, '$.idTo')),
+        JSON_UNQUOTE(JSON_EXTRACT(unit_json, '$.quantityTo'))
+      );
+      SET i = i + 1;
+    END WHILE;
+    CALL system_log(1, 1, CONCAT('Thêm mặt hàng ', name));
+  COMMIT;
+END

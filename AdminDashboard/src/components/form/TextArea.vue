@@ -1,5 +1,5 @@
 <template>
-  <div class="input-row mb-4">
+  <div class="input-row">
     <textarea class="h-full"
     :value="modelValue"
     @input="$emit('update:modelValue', $event.target.value)"

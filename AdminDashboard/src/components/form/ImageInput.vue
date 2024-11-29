@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <input class="hidden" type="file" @change="onFileChange" accept="image/*" />
+    <input ref="fileInput" class="hidden" :id="randomId" type="file" @change="onFileChange" accept="image/*" />
     <img :src="imageURL" class="h-[200px] mx-auto" v-if="imageURL" alt="Image preview" />
       <Icon icon="ei:close"
       class="absolute top-0 right-0 cursor-pointer" v-show="imageURL"
@@ -28,20 +28,23 @@ const imageURL = computed(() => {
   }
   return null;
 });
+const randomId = Math.random().toString(36).substring(7);
+const fileInput = ref(null);
+
 const openFileInput = () => {
-  const input = document.querySelector('input[type="file"]');
-  input.click();
+  fileInput.value.click();
 };
+
 const onFileChange = (e) => {
   const file = e.target.files[0];
   fileModel.value = file;
 };
+
 const removeFile = () => {
   fileModel.value = null;
-  
 };
+
 </script>
 
 <style lang="scss" scoped>
-
 </style>

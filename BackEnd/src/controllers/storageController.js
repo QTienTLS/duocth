@@ -1,11 +1,53 @@
-import { OK } from "@/core/success.response";
+import { InternalServerError } from "@/core/error.response";
+import { CREATED, OK } from "@/core/success.response";
 import storageService from "@/services/storageService";
+import multer from 'multer';
+import path from 'path';
+const imageStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.resolve(__dirname, '../public/images'));
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-duocth' + path.extname(file.originalname));
+  }
+});
 
-
-
+const uploadProduct = multer({ storage: imageStorage }).fields([
+  { name: 'img', maxCount: 1 },
+  { name: 'img_desc', maxCount: 1 }
+])
 class StorageController {
   async getTypesTree(req, res) {
     return new OK('Danh sách loại',await storageService.getTypesTree()).send(res);
+  }
+  async getDataComboProduct(req, res) {
+    return new OK('Danh sách sản phẩm',await storageService.getDataComboProduct()).send(res);
+  }
+  async addProduct(req, res) {
+    uploadProduct(req, res, async (err) => {
+      if (err) {
+        throw new InternalServerError('Lỗi khi upload ảnh sản phẩm');
+      }
+      let data = req.body;
+      data.img = req.files.img[0].filename;
+      data.img_desc = req.files.img_desc[0].filename;
+      const result = await storageService.addProduct(data);
+      return new CREATED('Thêm sản phẩm thành công').send(res);
+    });
+  }
+  async getProducts(req, res) {
+    const data = req.body;
+    const typeID = data.typeID?data.typeID:null;
+    const name = data.name?data.name:'';
+    const c_id = data.c_id?data.c_id:null;
+    const d_id = data.d_id?data.d_id:null;
+    return new OK('Danh sách sản phẩm',await storageService.getProducts(typeID, name, c_id, d_id)).send(res);
+  }
+  async deleteProduct(req, res) {
+    const data = req.body;
+    const id = data.id;
+    await storageService.deleteProduct(id);
+    return new OK('Xóa sản phẩm thành công').send(res);
   }
 }
 
