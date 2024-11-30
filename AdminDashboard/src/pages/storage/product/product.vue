@@ -42,7 +42,7 @@
           v-for="(item, index) in treeList"
           :treeList="item"
           :key="index"
-          @itemClick="addItem"
+          @itemClick="openProductByType"
         ></TypeGroup>
       </div>
       <div class="box-form" id="listproduct">
@@ -52,7 +52,7 @@
             <DataGrid
             :columns="gridAllProduct_columns"
             :dataSource="listProductAll"
-            panelDataHeight="500px"
+            panelDataHeight="900px"
             :showSTT="true"
             :allowTextWrap="true"
             />
@@ -114,6 +114,10 @@
         <button @click="saveClick" class="mr-4">Lưu lại</button>
       </template>
     </TModal>
+    <ProductByType
+    :typeInfo="typeInfo"
+    @addProduct="addItem"
+    ref="modalProductByType" />
   </div>
 </template>
 
@@ -122,6 +126,7 @@ import { computed, createApp, getCurrentInstance, onMounted, ref } from 'vue';
 import axios from '@/plugins/axiosPlugin';
 import { useToast } from 'vue-toast-notification';
 import TypeGroup from './TypeGroup.vue';
+import ProductByType from './ProductByType.vue';
 import { useSystemStore } from '@/stores/system';
 import useConfirm from '@/plugins/confirm';
 const systemStore = useSystemStore();
@@ -144,7 +149,24 @@ const getTreeList = async () => {
     treeList.value = res.data.data;
   } else toast.error(res.data.message);
 };
+const modalProductByType = ref(null);
 // modal
+const openProductByType = async(p_id,id) => {
+  const list = await getProducts(id, '', null, null);
+  const p_icon = treeList.value.find(item => item.id === p_id)?.icon;
+  const p_name = treeList.value.find(item => item.id === p_id)?.name;
+  const type_icon = treeList.value.find(item => item.id === p_id).children.find(item => item.id === id)?.icon;
+  const type_name = treeList.value.find(item => item.id === p_id).children.find(item => item.id === id)?.name;
+  modalProductByType.value.listProductAll = list&&list.length>0?list.map((item, index) => {
+    return {
+      ...item,
+      type_name: listType.value.find(type => type.id === item.type_id)?.text,
+      img: item.img ? `${import.meta.env.VITE_API_URL}/images/${item.img}` : '',
+      img_desc: item.img_desc ? `${import.meta.env.VITE_API_URL}/images/${item.img_desc}` : '',
+    };
+  }):[];
+  modalProductByType.value.show(p_id,id,p_icon,type_icon,p_name,type_name);
+}
 const openModal = ref(false);
 const modalTitle = ref('');
 const productName = ref('');
@@ -201,6 +223,41 @@ const addItem = (p_id, id) => {
 const saveClick = () => {
   if(modalMode.value === 'add')
     createNewProduct();
+  else
+    updateProduct();
+}
+const currentProductID = ref(null);
+const updateProduct = async () => {
+  try {
+    systemStore.setGlobalLoading(true);
+    let res = await axios.post('/storage/update-product', {
+      id: currentProductID.value,
+      name: productName.value,
+      description: productDescription.value,
+      img: productImg.value?productImg.value:'',
+      img_desc: productImgDesc.value?productImgDesc.value:'',
+      company_id: company.value,
+      distributor_id: distributor.value,
+      type_id: productType.value,
+      units: JSON.stringify(productUnit.value)
+    },
+  {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+    if (res.data.code === 'dth-200') {
+      toast.success('Cập nhật sản phẩm thành công');
+      getAllProduct();
+      openModal.value = false;
+    } else {
+      toast.error(res.data.message);
+    }
+  } catch (error) {
+    toast.error(error.message);
+  } finally {
+    systemStore.setGlobalLoading(false);
+  }
 }
 const createNewProduct = async () => {
   try {
@@ -222,6 +279,7 @@ const createNewProduct = async () => {
   });
     if (res.data.code === 'dth-201') {
       toast.success('Thêm mới sản phẩm thành công');
+      getAllProduct();
       openModal.value = false;
     } else {
       toast.error(res.data.message);
@@ -297,52 +355,7 @@ const imageTemplate = (ctx,mode) => {
     };
   };
 };
-const gridAllProduct_columns = computed(() => {
-  if(listProductAll.value.length === 0) return [
-  {
-    fieldName: 'name',
-    headerText: 'Tên sản phẩm',
-    width: 200
-  },
-  {
-    fieldName: 'type_name',
-    headerText: 'Loại sản phẩm',
-    width: 200
-  },
-  {
-    fieldName: 'company_name',
-    headerText: 'Nhà sản xuất',
-    width: 200
-  },
-  {
-    fieldName: 'distributor_name',
-    headerText: 'Nhà phân phối',
-    width: 200
-  },
-  {
-    fieldName: 'description',
-    headerText: 'Mô tả sản phẩm',
-    width: 200
-  },
-  {
-    fieldName: 'img',
-    headerText: 'Hình ảnh sản phẩm',
-    width: 200,
-    template: imageTemplate(ctx,1)
-  },
-  {
-    fieldName: 'img_desc',
-    headerText: 'Hình ảnh mô tả',
-    width: 200,
-    template: imageTemplate(ctx,2)
-  },
-  {
-    headerText: 'Hành động',
-    width: 200,
-    template: actionTemplate(ctx),
-  }
-]
-  else return [
+const gridAllProduct_columns = [
   {
     fieldName: 'name',
     headerText: 'Tên sản phẩm',
@@ -386,9 +399,7 @@ const gridAllProduct_columns = computed(() => {
     template: actionTemplate(ctx),
     freeze: 'Right'
   }
-
-]
-});
+];
 const deleteRow = async(data) =>{
   const confirm = await useConfirm({
     title: 'Xác nhận xóa',
@@ -411,6 +422,20 @@ const deleteRow = async(data) =>{
   } finally {
     systemStore.setGlobalLoading(false);
   }
+}
+const editRow = (data) => {
+  modalTitle.value = 'Chỉnh sửa sản phẩm';
+  productName.value = data.name;
+  productDescription.value = data.description;
+  productUnit.value = data.units;
+  company.value = data.company_id;
+  currentProductID.value = data.id;
+  distributor.value = data.distributor_id;
+  modalMode.value = 'edit';
+  productParentType.value = data.p_id;
+  productType.value = data.type_id;
+  openModal.value = true;
+  productParentType.value = data.p_type_id;
 }
 const getAllProduct = async() =>{
   listProductAll.value = [];

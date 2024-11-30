@@ -2,6 +2,7 @@
   <div class="input-row">
     <input 
     :value="modelValue"
+    @input="$emit('update:modelValue', $event.target.value)"
     @enter="$emit('enter')"
     :type="type" :id="id" placeholder=" " />
     <label :for="id">

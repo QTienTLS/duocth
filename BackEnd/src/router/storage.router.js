@@ -13,6 +13,7 @@ router.get('/get-data-combo-product', asyncHandler(storageController.getDataComb
 router.post('/add-product', asyncHandler(storageController.addProduct));
 router.post('/get-products', asyncHandler(storageController.getProducts));
 router.post('/delete-product', asyncHandler(storageController.deleteProduct));
+router.post('/update-product', asyncHandler(storageController.updateProduct));
 
 
 export default router;

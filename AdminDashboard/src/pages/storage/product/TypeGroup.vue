@@ -4,7 +4,7 @@
       <Icon :icon="computedList.icon" class="w-6 h-6" />
       <span>{{ computedList.name }}</span>
     </div>
-    <div class="p-4 flex-1 ">
+    <div class="p-4 flex-1 overflow-y-auto">
       <div class="grid grid-cols-3 gap-4"
     v-if="computedList.children.length > 0"
     >
