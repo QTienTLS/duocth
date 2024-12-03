@@ -1,5 +1,5 @@
 <template>
-  <div class="border border-t-0 border-primary text-white h-[20rem] flex flex-col">
+  <div class="border border-t-0 border-primary text-white h-[25rem] flex flex-col">
     <div class="w-full h-8 bg-gradient-to-r flex items-center gap-4 pl-4 from-primary to-primary-500">
       <Icon :icon="computedList.icon" class="w-6 h-6" />
       <span>{{ computedList.name }}</span>
