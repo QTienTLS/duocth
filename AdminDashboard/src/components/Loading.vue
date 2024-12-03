@@ -1,7 +1,7 @@
 <template>
   <div class="relative w-fit h-fit">
     <div
-    class=" left-0 top-0 z-50
+    class=" left-0 top-0 z-[999999]
     flex flex-col items-center justify-center bg-white bg-opacity-50 backdrop-blur-sm"
     :class="fullMode?'fixed w-[100vw] h-[100vh]':'absolute w-full h-full'"
     v-show="modelValue">

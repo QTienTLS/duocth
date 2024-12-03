@@ -37,6 +37,7 @@ import { CheckBoxComponent as EjsCheckBox } from "@syncfusion/ej2-vue-buttons";
 import { TooltipComponent as EjsTooltip  } from "@syncfusion/ej2-vue-popups";
 import { DropDownListComponent } from '@syncfusion/ej2-vue-dropdowns'
 import TextArea from './components/form/TextArea.vue';
+import ImageView from './components/ImageView.vue';
 
 
 const app = createApp(App)
@@ -49,6 +50,7 @@ app.component('ejs-datepicker', EjsDatepicker)
 app.component('e-aggregates', AggregatesDirective)
 app.component('e-checkbox', EjsCheckBox)
 app.component('e-tooltip', EjsTooltip)
+app.component('ImageView', ImageView)
 app.component('FormTextArea', TextArea)
 app.component('e-aggregate', AggregateDirective)
 app.component('GridButton', GridButton)

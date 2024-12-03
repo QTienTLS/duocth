@@ -6,7 +6,9 @@
     "@types/bun": "latest"
   },
   "scripts": {
-    "dev": "bun --watch server.js",
+    "dev": "NODE_ENV=development bun --watch server.js",
+    "dev1": "NODE_ENV=production bun --watch server.js",
+    "dump": "bun ./src/database/dumpDB.js",
     "migrate": "npx knex migrate:latest --knexfile src/database/knexfile.js",
     "seed": "npx knex seed:run --knexfile src/database/knexfile.js"
   },
