@@ -1,6 +1,7 @@
 <template>
-  <div class="w-fit h-fit">
-    <img ref="image" :src="props.src" alt="Image"
+  <div class="">
+    <img ref="image" 
+    :src="props.src" alt="Image"
     :class="{
       'w-full': props.fitWidth,
       'h-full': props.fitHeight,

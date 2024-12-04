@@ -4,6 +4,8 @@
     :value="modelValue"
     @input="$emit('update:modelValue', $event.target.value)"
     @enter="$emit('enter')"
+    @focus="$emit('focus')"
+    @blur="$emit('blur')"
     :type="type" :id="id" placeholder=" " />
     <label :for="id">
       <Icon v-if="icon" :icon="icon" />
@@ -21,6 +23,7 @@ const props = defineProps({
   default: '',
   icon: String
 })
+defineEmits(['update:modelValue', 'enter', 'focus', 'blur'])
 const modelValue = defineModel();
 //random id
 const id = `input-${new Date().getTime()}-${Math.floor(Math.random() * 1000)}`;

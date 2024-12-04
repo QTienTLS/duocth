@@ -30,7 +30,7 @@ class StorageController {
           throw new InternalServerError('Lỗi khi upload ảnh sản phẩm');
         }
         let data = req.body;
-        if(!data.name || !data.type_id || !data.units || !data.distributor_id) {
+        if(!data.name || !data.type_id || !data.units) {
           throw new InternalServerError('Vui lòng nhập đầy đủ thông tin');
         }
         data.img = req.files.img?req.files.img[0].filename:'';
