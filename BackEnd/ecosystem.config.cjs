@@ -2,7 +2,7 @@ module.exports = {
   apps: [
   {
     name: 'MindStore-API',
-    script: 'server.js',          // Đường dẫn đến file Bun app của bạn
+    script: 'bun',          // Đường dẫn đến file Bun app của bạn
     interpreter: 'bun',        // Sử dụng Bun làm runtime
     args: 'run dev1',               // Thêm args nếu cần thiết
     instances: 1,              // Tùy chọn: số lượng instance
