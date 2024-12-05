@@ -12,7 +12,7 @@
       </li>
     </ul>
     <div class="page-content">
-      <div class="grid grid-cols-5 gap-8">
+      <div class="grid grid-cols-5 mobile:grid-cols-1 gap-8">
         <div
           v-for="(item, index) in treeList"
           class="card"
@@ -37,7 +37,7 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-8 mt-12 mb-12">
+      <div class="grid grid-cols-2 mobile:grid-cols-1 gap-8 mt-12 mb-12">
         <TypeGroup
           v-for="(item, index) in treeList"
           :treeList="item"
@@ -65,22 +65,22 @@
         <div class="text-xl font-bold text-left">{{ modalTitle }}</div>
       </template>
       <template #body>
-        <div class="overflow-y-auto h-full">
+        <div class="overflow-y-auto h-full pb-4">
           <div class="grid grid-cols-8 gap-4 gap-y-0 mt-4 ">
-          <FormInput v-model="productName" class="col-span-3"  label="Tên sản phẩm" icon="fluent-mdl2:product" />
-          <FormTextArea v-model="productDescription" class="col-span-5"  label="Mô tả sản phẩm" :rows="5" icon="fluent:text-description-16-filled" />
-          <FormSelect v-model="productParentType" :options="listParentType" class="col-span-2"  label="Danh mục sản phẩm" icon="grommet-icons:catalog-option" />
-          <FormSelect v-model="productType" :options="listTypeComputed" class="col-span-2"  label="Loại sản phẩm" icon="tdesign:catalog" />
-          <FormSelect v-model="company" :options="listCompany" class="col-span-2"  label="Nhà sản xuất" icon="mdi:drugs" />
-          <FormSelect v-model="distributor" :options="listDistributor" class="col-span-2"  label="Nhà phân phối" icon="material-symbols:local-shipping-outline-sharp" />
+          <FormInput v-model="productName" class="col-span-3 mobile:col-span-8"  label="Tên sản phẩm" icon="fluent-mdl2:product" />
+          <FormTextArea v-model="productDescription" class="col-span-5 mobile:col-span-8"  label="Mô tả sản phẩm" :rows="5" icon="fluent:text-description-16-filled" />
+          <FormSelect v-model="productParentType" :options="listParentType" class="col-span-2 mobile:col-span-8"  label="Danh mục sản phẩm" icon="grommet-icons:catalog-option" />
+          <FormSelect v-model="productType" :options="listTypeComputed" class="col-span-2 mobile:col-span-8"  label="Loại sản phẩm" icon="tdesign:catalog" />
+          <FormSelect v-model="company" :options="listCompany" class="col-span-2 mobile:col-span-8"  label="Nhà sản xuất" icon="mdi:drugs" />
+          <FormSelect v-model="distributor" :options="listDistributor" class="col-span-2 mobile:col-span-8"  label="Nhà phân phối" icon="material-symbols:local-shipping-outline-sharp" />
           <div class="info-row col-span-4 mt-2">
-            <div class="key">Hình ảnh sản phẩm</div>
+            <div class="key mobile:!text-[1rem]">Hình ảnh sản phẩm</div>
             <div class="value">
               <ImageInput v-model="productImg" />
             </div>
           </div>
           <div class="info-row col-span-4 mt-2">
-            <div class="key">Hình ảnh mô tả</div>
+            <div class="key mobile:!text-[1rem]">Hình ảnh mô tả</div>
             <div class="value">
               <ImageInput v-model="productImgDesc" />
             </div>
@@ -88,12 +88,12 @@
           <div class="col-span-8 gap-2 flex items-center" v-for="(item,index) in productUnit"
           :key="index"
           >
-              <div class="grid grid-cols-2 gap-2 flex-1">
+              <div class="grid grid-cols-1 gap-2 flex-1">
                 <FormInput v-model="item.quantityFrom" label="Số lượng" />
                 <FormSelect v-model="item.idFrom"  :options="listUnit" label="Đơn vị" />
               </div>
             <span>=</span>
-              <div class="grid grid-cols-2 gap-2 flex-1">
+              <div class="grid grid-cols-1 gap-2 flex-1">
                 <FormInput v-model="item.quantityTo" label="Số lượng" />
                 <FormSelect v-model="item.idTo"  :options="listUnit" label="Đơn vị" />
               </div>

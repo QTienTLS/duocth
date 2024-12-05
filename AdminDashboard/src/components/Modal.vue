@@ -8,7 +8,7 @@
 
   >
     <div class="modal-background" @click="closeOnOutside">
-      <div class="modal" ref="modal">
+      <div class="modal min-w-[700px] mobile:min-w-full" ref="modal">
         <div class="modal-panel">
           <slot name="header">
           <h2>Modal Header</h2>
@@ -81,6 +81,12 @@ export default {
         this.opened = true
       }
       document.body.classList.toggle('modal-active', val)
+      if(val){
+        document.getElementsByTagName('html')[0].style.overflow = 'hidden'
+      }
+      else{
+        document.getElementsByTagName('html')[0].style.overflow = 'auto'
+      }
     }
   }
 }
@@ -124,7 +130,6 @@ body {
       display: none;
     }
   }
-
   .modal-background {
     display: table-cell;
     background: rgba(0, 0, 0, 0.6);
@@ -135,7 +140,6 @@ body {
       padding: 20px;
       display: inline-block;
       border-radius: 3px;
-      min-width: 700px;
       // min-height: 300px;
       max-height: 90%;
       max-width: 95%;

@@ -1,7 +1,7 @@
 <template>
     <div class="">
       <SideNav/>
-      <div ref="contentBody" class="transition-all transition-300 absolute right-0 top-0"
+      <div ref="contentBody" class="transition-all transition-300 absolute right-0 top-0 mobile:w-full"
       :class="open?'w-[calc(100%-256px)]':'w-[calc(100%-96px)]'">
       <router-view v-slot="{Component}">
       <transition name="zoom" mode="out-in">

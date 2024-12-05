@@ -18,7 +18,7 @@
           <DataGrid
             :columns="gridAllProduct_columns"
             :dataSource="listProductAll"
-            panelDataHeight="700px"
+            panelDataHeight="450px"
             :showSTT="true"
             :allowTextWrap="true"
             />
@@ -93,7 +93,7 @@ const imageTemplate = (ctx,mode) => {
     return {
       template: app.component(``, {
         template: `
-        <img :src="mode==1?data.img:data.img_desc" alt="image" class="w-full mx-auto object-cover" />
+        <ImageView :src="mode==1?data.img:data.img_desc" alt="image" class="w-full mx-auto object-cover" />
       `,
       data(){
         return{

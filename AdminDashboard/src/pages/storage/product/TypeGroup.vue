@@ -5,7 +5,7 @@
       <span>{{ computedList.name }}</span>
     </div>
     <div class="p-4 flex-1 overflow-y-auto">
-      <div class="grid grid-cols-3 gap-4"
+      <div class="grid grid-cols-3 mobile:grid-cols-2 gap-4"
     v-if="computedList.children.length > 0"
     >
       <div

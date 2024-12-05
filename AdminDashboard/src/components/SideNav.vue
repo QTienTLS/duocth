@@ -1,8 +1,21 @@
 <template>
     <div
-    class="bg-primary h-[100vh] flex flex-col fixed top-0 p-4 text-white  transition-all duration-300"
-    :class="open ? 'w-64' : 'w-24'"
+    class="bg-primary mobile:fixed h-[100vh] mobile:left-0 mobile:z-[9999] flex flex-col fixed top-0 p-4 text-white  transition-all duration-300"
+    :class="open ? 'w-64' : 'w-24 mobile:-translate-x-full mobile:w-64'"
   >
+    <div class="hidden mobile:block mobile:fixed mobile:top-0 mobile:right-0 bg-black bg-opacity-50
+    h-full w-[calc(100vw-256px)] transition-all duration-200"
+    @click="open=false"
+    :class="open?'visible opacity-1':'invisible opacity-0'"
+    ></div>
+    <div class="fixed -right-[calc(100vw-1rem)] rounded-full mobile:flex hidden items-center
+    transition-all duration-200
+    justify-center bottom-8 shadow-box3 h-16 w-16 text-active bg-primary"
+    :class="!open?'visible opacity-1':'invisible opacity-0'"
+    @click="toggleSidebar"
+    >
+      <Icon icon="basil:menu-outline" width="2rem" height="2rem" />
+    </div>
     <div
       @click="toggleSidebar"
       class="h-24 gap-2 flex items-center w-full cursor-pointer relative overflow-x-hidden"
