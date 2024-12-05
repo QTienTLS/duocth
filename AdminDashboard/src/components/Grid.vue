@@ -24,7 +24,7 @@
       <template v-for="column  in getColumns" :key="column.fieldName">
         <e-column :field="column.fieldName" :headerText="column.headerText" :type="column.columnType"
           :format="column.columnFormat" :headerTemplate="column.headerTemplate" :isPrimaryKey="column.isPrimaryKey"
-          :filterTemplate="column.filterTemplate" :filter="{ operator: 'contains' }" :width="column.width"
+           :filter="{ operator: 'contains' }" :width="column.width"
           :allowFiltering="column.allowFiltering" :textAlign="column.textAlign" :freeze="column.freeze"
           :visible="column.visible" :commands="column.commands" :template="column.template"
           :disableHtmlEncode="column.disableHtmlEncode" :clipMode="column.clipMode" :columns="column.columns"

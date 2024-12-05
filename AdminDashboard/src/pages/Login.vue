@@ -2,7 +2,7 @@
   <div class="login h-[100vh] w-[100vw] flex justify-center items-center">
     <Loading v-model="loadingLogin">
       <div class="h-[20rem] w-[30vw] text-center
-    bg-white shadow-lg rounded-lg py-4 px-32 flex flex-col
+    bg-white shadow-lg rounded-lg py-4 px-32 flex flex-col mobile:px-8 mobile:w-[90vw] mobile:h-[30rem]
     ">
       <h2 class="mb-12">Đăng nhập hệ thống</h2>
       <!-- <form> -->

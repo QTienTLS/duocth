@@ -8,7 +8,7 @@
 
   >
     <div class="modal-background" @click="closeOnOutside">
-      <div class="modal min-w-[700px] mobile:min-w-full" ref="modal">
+      <div class="modal min-w-[700px] mobile:!min-w-full mobile:!max-w-full mobile:!w-[100vw]" ref="modal">
         <div class="modal-panel">
           <slot name="header">
           <h2>Modal Header</h2>

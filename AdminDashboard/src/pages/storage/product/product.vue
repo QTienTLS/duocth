@@ -49,13 +49,26 @@
         <div class="info-row">
           <div class="key">Danh sách sản phẩm</div>
           <div class="value">
-            <DataGrid
-            :columns="gridAllProduct_columns"
-            :dataSource="listProductAll"
-            panelDataHeight="900px"
-            :showSTT="true"
-            :allowTextWrap="true"
-            />
+            <qt-table v-model="listProductAll">
+              <el-table-column label="Hình ảnh sản phẩm" width="200">
+                <template #default="scope">
+                  <ImageView :src="scope.row.img_desc" alt="image" class="w-full mx-auto object-cover" />
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="Tên sản phẩm" width="200"></el-table-column>
+              <el-table-column prop="type_name" label="Loại sản phẩm" width="150"></el-table-column>
+              <el-table-column prop="company_name" label="Nhà sản xuất" width="150"></el-table-column>
+              <el-table-column prop="distributor_name" label="Nhà phân phối" width="150"></el-table-column>
+              <el-table-column prop="description" label="Mô tả sản phẩm" width="300"></el-table-column>
+              <el-table-column label="Hành động" width="150">
+                <template #default="scope">
+                    <div class="flex justify-center gap-4">
+                      <GridButton title="Chỉnh sửa" icon="ri:edit-2-line" type="primary" @click="editRow(scope.row)"></GridButton>
+                      <GridButton title="Xóa" icon="material-symbols:delete-sharp" type="danger" @click="deleteRow(scope.row)"></GridButton>
+                    </div>
+                  </template>
+              </el-table-column>
+            </qt-table>
           </div>
         </div>
       </div>
@@ -311,95 +324,6 @@ const getProducts = async (type_id, name, c_id, d_id) => {
   }
 }
 const listProductAll = ref([]);
-const actionTemplate = (parent) => {
-  return function () {
-    return {
-      template: app.component(``, {
-        template: `
-        <div class="flex justify-center gap-4">
-          <GridButton title="Chỉnh sửa" icon="ri:edit-2-line" type="primary" @click="editRow(data)"></GridButton>
-          <GridButton title="Xóa" icon="material-symbols:delete-sharp" type="danger" @click="deleteRow(data)"></GridButton>
-        </div>
-      `,
-        data() {
-          return {
-            parent: parent,
-          };
-        },
-        methods: {
-          editRow(data) {
-            editRow(data);
-          },
-          deleteRow(data) {
-            deleteRow(data);
-          },
-        },
-      }),
-    };
-  };
-};
-const imageTemplate = (ctx,mode) => {
-  return function () {
-    return {
-      template: app.component(``, {
-        template: `
-        <ImageView :src="mode==1?data.img:data.img_desc" alt="image" class="w-full mx-auto object-cover" />
-      `,
-      data(){
-        return{
-          parent: ctx,
-          mode: mode
-        }
-      }
-      }),
-    };
-  };
-};
-const gridAllProduct_columns = [
-  {
-    fieldName: 'name',
-    headerText: 'Tên sản phẩm',
-    width: 200
-  },
-  {
-    fieldName: 'type_name',
-    headerText: 'Loại sản phẩm',
-    width: 200
-  },
-  {
-    fieldName: 'company_name',
-    headerText: 'Nhà sản xuất',
-    width: 200
-  },
-  {
-    fieldName: 'distributor_name',
-    headerText: 'Nhà phân phối',
-    width: 200
-  },
-  {
-    fieldName: 'description',
-    headerText: 'Mô tả sản phẩm',
-    width: 200
-  },
-  {
-    fieldName: 'img',
-    headerText: 'Hình ảnh sản phẩm',
-    width: 200,
-    template: imageTemplate(ctx,1)
-  },
-  {
-    fieldName: 'img_desc',
-    headerText: 'Hình ảnh mô tả',
-    width: 200,
-    template: imageTemplate(ctx,2)
-  },
-  {
-    headerText: 'Hành động',
-    width: 200,
-    template: actionTemplate(ctx),
-    freeze: 'Right'
-  }
-];
 const deleteRow = async(data) =>{
   const confirm = await useConfirm({
     title: 'Xác nhận xóa',

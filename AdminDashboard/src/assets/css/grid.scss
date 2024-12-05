@@ -45,3 +45,36 @@
 .e-row.e-altrow{
   background-color: #f9f9f9;
 }
+
+
+.el-table__header{
+  th.el-table__cell{
+    background-color: #005F39 !important;
+    color: white;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    .cell{
+      text-align: center;
+    }
+  }
+}
+.el-table__body{
+  tr.el-table__row{
+    &.el-table__row--striped{
+      td.el-table__cell{
+        background-color: #f9f9f9 !important;
+      }
+    }
+    &:hover{
+      td.el-table__cell{
+        background-color: #f7ffac !important;
+      }
+    }
+  }
+}
+
+ul.el-pager{
+  li{
+    border-radius: 50%;
+  }
+}

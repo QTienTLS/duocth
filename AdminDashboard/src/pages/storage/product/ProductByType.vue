@@ -15,13 +15,26 @@
           Danh sách sản phẩm
         </div>
         <div class="value">
-          <DataGrid
-            :columns="gridAllProduct_columns"
-            :dataSource="listProductAll"
-            panelDataHeight="450px"
-            :showSTT="true"
-            :allowTextWrap="true"
-            />
+          <qt-table v-model="listProductAll" height="520">
+            <el-table-column label="Hình ảnh sản phẩm" width="200">
+                <template #default="scope">
+                  <ImageView :src="scope.row.img_desc" alt="image" class="w-full mx-auto object-cover" />
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="Tên sản phẩm" width="200"></el-table-column>
+              <el-table-column prop="type_name" label="Loại sản phẩm" width="150"></el-table-column>
+              <el-table-column prop="company_name" label="Nhà sản xuất" width="150"></el-table-column>
+              <el-table-column prop="distributor_name" label="Nhà phân phối" width="150"></el-table-column>
+              <el-table-column prop="description" label="Mô tả sản phẩm" width="300"></el-table-column>
+              <el-table-column label="Hành động" width="150">
+                <template #default="scope">
+                    <div class="flex justify-center gap-4">
+                      <GridButton title="Chỉnh sửa" icon="ri:edit-2-line" type="primary" @click="editRow(scope.row)"></GridButton>
+                      <GridButton title="Xóa" icon="material-symbols:delete-sharp" type="danger" @click="deleteRow(scope.row)"></GridButton>
+                    </div>
+                  </template>
+              </el-table-column>
+            </qt-table>
         </div>
       </div>
     </template>

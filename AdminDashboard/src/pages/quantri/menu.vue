@@ -14,12 +14,25 @@
             </div>
           </div>
           <div class="value">
-            <DataGrid
-              :dataSource="listMenu"
-              :columns="grid_columns"
-              panelDataHeight="500px"
-              :showSTT="true"
-            />
+            <qt-table v-model="listMenu">
+                <el-table-column prop="id" label="ID" width="50"></el-table-column>
+                <el-table-column prop="name" label="Tên danh mục"></el-table-column>
+                <el-table-column prop="url" label="URL"></el-table-column>
+                <el-table-column prop="p_name" label="Danh mục cha"></el-table-column>
+                <el-table-column label="Icon " width="100">
+                  <template #default="scope">
+                    <Icon :icon="scope.row.icon" class="mx-auto" height="1.5rem" width="1.5rem" />
+                  </template>
+                </el-table-column>
+                <el-table-column label="Hành động" width="200" fixed="right">
+                  <template #default="scope">
+                    <div class="flex justify-center gap-4">
+                      <GridButton title="Chỉnh sửa" icon="ri:edit-2-line" type="primary" @click="editRow(scope.row)"></GridButton>
+                      <GridButton title="Xóa" icon="material-symbols:delete-sharp" type="danger" @click="deleteRow(scope.row)"></GridButton>
+                    </div>
+                  </template>
+                </el-table-column>
+            </qt-table>
           </div>
         </div>
       </div>
@@ -74,83 +87,6 @@ const { ctx } = getCurrentInstance();
 const toast = useToast();
 const app = createApp();
 const listMenu = ref([]);
-
-const iconTemplate = (parent) => {
-  return function () {
-    return {
-      template: app.component('',{
-        template: `<Icon :icon="data.icon" class="mx-auto" height="1rem" width="1rem" />`,
-        data() {
-          return {
-            parent: parent,
-          };
-        },
-      }),
-    };
-  };
-};
-const actionTemplate = (parent) => {
-  return function () {
-    return {
-      template: app.component(``, {
-        template: `
-        <div class="flex justify-center gap-4">
-          <GridButton title="Chỉnh sửa" icon="ri:edit-2-line" type="primary" @click="editRow(data)"></GridButton>
-          <GridButton title="Xóa" icon="material-symbols:delete-sharp" type="danger" @click="deleteRow(data)"></GridButton>
-        </div>
-      `,
-        data() {
-          return {
-            parent: parent,
-          };
-        },
-        methods: {
-          editRow(data) {
-            editRow(data);
-          },
-          deleteRow(data) {
-            deleteRow(data);
-          },
-        },
-      }),
-    };
-  };
-};
-const grid_columns = [
-  {
-    fieldName: 'p_name',
-    headerText: 'Danh mục cha',
-    width: '120px',
-    // isGroupedColumn: true,
-  },
-  {
-    fieldName: 'id',
-    headerText: 'ID',
-    width: '50px',
-    textAlign: 'center',
-  },
-  {
-    fieldName: 'name',
-    headerText: 'Tên danh mục',
-    width: '120px',
-  },
-  {
-    fieldName: 'url',
-    headerText: 'URL',
-    width: '120px',
-  },
-  {
-    fieldName: 'icon',
-    headerText: 'Icon',
-    width: '70px',
-    template: iconTemplate(ctx),
-  },
-  {
-    headerText: 'Hành động',
-    width: '100px',
-    template: actionTemplate(ctx),
-  },
-];
 
 const openModal = ref(false);
 // ---1: thêm mới, 2: sửa

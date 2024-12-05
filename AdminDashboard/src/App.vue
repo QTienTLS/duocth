@@ -1,6 +1,8 @@
 <script setup>
 import { computed } from 'vue';
 import { useSystemStore } from './stores/system';
+import vi from 'element-plus/es/locale/lang/vi';
+import { ElConfigProvider } from 'element-plus';
 const systemStore = useSystemStore();
 
 const openModalConfirm = computed(() => systemStore.openModalConfirm);
@@ -14,7 +16,8 @@ const globalLoading = computed({
 </script>
 
 <template>
-  <div>
+  <el-config-provider :locale="vi">
+    <div>
     <Loading fullMode v-model="globalLoading">
     </Loading>
       <router-view></router-view>
@@ -31,6 +34,7 @@ const globalLoading = computed({
         </template>
       </TModal>
     </div>
+  </el-config-provider>
 </template>
 
 <style lang="scss" scoped>
