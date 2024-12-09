@@ -16,7 +16,7 @@ class StorageService {
   async addProduct(data) {
     try {
       const units = data.units.replace(/\\/g, '');
-    const result = await db.raw(`
+      const result = await db.raw(`
       CALL add_product(
         '${data.name}',
         '${data.description}',
@@ -27,7 +27,7 @@ class StorageService {
         '${data.type_id}',
         '${units}');
       `);
-    return result[0][0];
+      return result[0][0];
     } catch (error) {
       throw new InternalServerError(error.message);
     }
@@ -84,6 +84,32 @@ class StorageService {
         return;
       }
     });
+  }
+  async getProductImport(id) {
+    const products = await db.raw(
+      `SELECT get_product_import(${id}) AS products`,
+    );
+    const p = products[0][0].products;
+    let units = p.units;
+    let fixedUnits = [];
+    for (let i = 0; i < units.length; i++) {
+      if (i === 0) {
+        fixedUnits.push({
+          id: units[i].id,
+          name: units[i].name,
+        });
+        fixedUnits.push({
+          id: units[i].to_id,
+          name: units[i].to_name,
+        });
+      } else
+        fixedUnits.push({
+          id: units[i].to_id,
+          name: units[i].to_name,
+        });
+    }
+    p.units = fixedUnits;
+    return p;
   }
 }
 

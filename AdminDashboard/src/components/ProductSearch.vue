@@ -5,8 +5,15 @@
     <FormInput
     @focus="inputFocus"
     v-model="search" label="Tìm sản phẩm" icon="fluent-mdl2:product" />
+    <div
+    class="tablet:block hidden bg-black opacity-30 fixed inset-0 z-[99999]"
+    :class="open?'visible':'invisible'"
+    @click="open = false"
+    ></div>
     <ul
-    class="product-list absolute border shadow-box2 border-gray-200 transition-all transition-200 w-full max-h-[500px] overflow-y-auto"
+    class="product-list
+    tablet:fixed tablet:w-[90vw] tablet:max-h-[80vh] tablet:z-[999999] bg-white tablet:top-[10vh] tablet:left-[5vw]
+    absolute border shadow-box2 z-[999999] border-gray-200 transition-all transition-200 w-full max-h-[500px] overflow-y-auto"
     :class="{
       'visible opacity-1': open,
       'invisible opacity-0': !open
@@ -76,6 +83,9 @@ onMounted(() => {
 })
 const showingList = computed(() => {
   return listProduct.value.filter(item => item.name.toLowerCase().includes(search.value.toLowerCase()));
+})
+defineExpose({
+  getListProduct
 })
 </script>
 

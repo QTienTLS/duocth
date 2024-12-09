@@ -20,7 +20,7 @@
       class="mt-4 overflow-x-auto"
       background
       layout="prev, pager, next, jumper, sizes, ->, total"
-      :total="dataSource.length"
+      :total="searchedData.length"
       :page-sizes="[10, 100, 200, 300, 400]"
       v-model:current-page="currentPage"
       v-model:page-size="pageSize"
@@ -49,16 +49,18 @@ const handleCurrentChangePage = (val) => {
 const handleSizeChange = (val) => {
   pageSize.value = val;
 };
-const dataComputed = computed(() => {
-  return dataSource.value.slice(
-    (currentPage.value - 1) * pageSize.value,
-    currentPage.value * pageSize.value,
-  )
-  .filter((item) => {
+const searchedData = computed(() => {
+  return dataSource.value.filter((item) => {
     return Object.values(item).some((value) => {
       return String(value).toLowerCase().includes(search.value.toLowerCase());
     });
   });
+});
+const dataComputed = computed(() => {
+  return searchedData.value.slice(
+    (currentPage.value - 1) * pageSize.value,
+    currentPage.value * pageSize.value,
+  )
 });
 </script>
 

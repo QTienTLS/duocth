@@ -50,7 +50,7 @@
           <div class="key">Danh sách sản phẩm</div>
           <div class="value">
             <qt-table v-model="listProductAll">
-              <el-table-column label="Hình ảnh sản phẩm" width="200">
+              <el-table-column label="Hình ảnh sản phẩm" >
                 <template #default="scope">
                   <ImageView :src="scope.row.img_desc" alt="image" class="w-full mx-auto object-cover" />
                 </template>

@@ -367,3 +367,93 @@ BEGIN
     CALL system_log(1, 1, CONCAT('Thêm mặt hàng ', name));
   COMMIT;
 END
+
+DELETE TABLE IF EXISTS `storage`;
+CREATE TABLE `storage` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `product_id` int unsigned NOT NULL,
+  `unit_id` int unsigned NOT NULL,
+  `quantity` int unsigned NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `product_id` (`product_id`),
+  CONSTRAINT `storage_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `storage_unit_id_foreign` FOREIGN KEY (`unit_id`) REFERENCES `units` (`id`) ON DELETE CASCADE
+)
+
+CREATE TABLE `import_histories` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `product_id` int unsigned NOT NULL,
+  `distributor_id` int unsigned NOT NULL,
+  `unit_id` int unsigned NOT NULL,
+  `quantity` int unsigned NOT NULL,
+  `import_price` bigint unsigned NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `product_id` (`product_id`),
+  INDEX `distributor_id` (`distributor_id`),
+  CONSTRAINT `import_histories_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `import_histories_distributor_id_foreign` FOREIGN KEY (`distributor_id`) REFERENCES `distributors` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `import_histories_unit_id_foreign` FOREIGN KEY (`unit_id`) REFERENCES `units` (`id`) ON DELETE CASCADE
+)
+CREATE TABLE `price` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `product_id` int unsigned NOT NULL,
+  `unit_id` int unsigned NOT NULL,
+  `price` bigint unsigned NOT NULL,
+  `active` tinyint(1) DEFAULT 1,
+  `using_from` datetime DEFAULT NULL,
+  `stop_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `product_id` (`product_id`),
+  CONSTRAINT `price_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `price_unit_id_foreign` FOREIGN KEY (`unit_id`) REFERENCES `units` (`id`) ON DELETE CASCADE
+)
+
+CREATE FUNCTION duocth_development.get_product_import( product_id INT )
+RETURNS JSON
+BEGIN
+	DECLARE r JSON;
+  DECLARE unit_obj JSON;
+  DECLARE quantity_by_unit JSON;
+  
+
+  SELECT JSON_ARRAYAGG(
+    JSON_OBJECT(
+      'id', u.id,
+      'name', u.name
+    )
+  ) INTO unit_obj
+  FROM product_units pu JOIN units u ON pu.unit_from_id = u.id
+  WHERE pu.product_id = product_id;
+
+  SELECT JSON_ARRAYAGG(
+    JSON_OBJECT(
+      'from_id', pu.unit_from_id,
+      'to_id', pu.unit_to_id,
+      'from_name', u.name,
+      'to_name', u1.name,
+      'base_quantity', s.quantity,
+      'conversion_factor', pu.quantity_to / pu.quantity_from
+    )
+  ) INTO quantity_by_unit
+  FROM product_units pu JOIN units u ON pu.unit_from_id = u.id JOIN units u1 ON pu.unit_to_id = u1.id
+  LEFT JOIN storage s ON s.product_id = pu.product_id AND s.unit_id = pu.unit_from_id
+  WHERE pu.product_id = product_id;
+
+  SELECT JSON_OBJECT(
+    'units', unit_obj,
+    'quantity_by_unit', quantity_by_unit,
+    'product_name', p.name,
+    'product_id', p.id,
+    'image', p.description_image,
+    'description', p.description
+  ) INTO r
+  FROM products p
+  WHERE p.id = product_id;
+
+  RETURN r;
+
+END

@@ -68,6 +68,13 @@ class StorageController {
       return new OK('Upload ảnh sản phẩm thành công').send(res);
     });
   }
+  async getProductImport(req, res) {
+    const {id} = req.body;
+    if(!id) {
+      throw new InternalServerError('Vui lòng nhập id sản phẩm');
+    }
+    return new OK('Lấy dữ liệu sản phẩm thành công',await storageService.getProductImport(id)).send(res);
+  }
 }
 
 export default new StorageController();
