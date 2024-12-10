@@ -2,11 +2,8 @@ import axios from 'axios'
 import { useToast } from 'vue-toast-notification'
 import { useAuthStore } from '../stores/auth'
 
-let baseURL = 'http://localhost:2022';
-if(process.env.NODE_ENV === 'production'){
-  baseURL = 'https://api.mindstore.io.vn';
-}
-console.log(baseURL);
+let baseURL = import.meta.env.VITE_API_URL;
+
 
 axios.defaults.baseURL = baseURL
 axios.defaults.headers = {

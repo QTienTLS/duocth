@@ -111,7 +111,11 @@ ul.top-button-list{
   height: 3rem;
   display: flex;
   list-style: none;
-  li{
+  li, a{
+    a{
+      border: none;
+      color: inherit;
+    }
     border-right: 1px solid #d3d3d3;
     color: #022213;
     cursor: pointer;

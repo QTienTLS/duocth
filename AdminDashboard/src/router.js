@@ -76,6 +76,11 @@ const router = createRouter({
               path: 'plan',
               name: 'Plan',
               component: () => import('./pages/storage/plan'),
+            },
+            {
+              path: 'index',
+              name: 'Storage',
+              component: () => import('./pages/storage/stock'),
             }
           ]
         }

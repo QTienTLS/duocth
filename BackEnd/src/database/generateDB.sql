@@ -457,3 +457,85 @@ BEGIN
   RETURN r;
 
 END
+
+CREATE PROCEDURE duocth_development.import_product(
+  IN product_id INT,
+  IN distributor_id INT,
+  IN unit_id INT,
+  IN quantity INT,
+  IN import_price BIGINT
+)
+BEGIN
+  DECLARE product_exist INT;
+  DECLARE storage_id INT;
+  DECLARE storage_quantity INT;
+  SELECT COUNT(*) FROM products WHERE id = product_id AND active = 1 INTO product_exist;
+  IF product_exist = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Mặt hàng không tồn tại hoặc đã bị xóa';
+  END IF;
+  INSERT INTO import_histories(
+    product_id,
+    distributor_id,
+    unit_id,
+    quantity,
+    import_price,
+    created_at
+  ) VALUES(
+    product_id,
+    distributor_id,
+    unit_id,
+    quantity,
+    import_price,
+    NOW()
+  );
+  -- Check if product exist in storage
+  SELECT id, quantity FROM storage WHERE product_id = product_id AND unit_id = unit_id INTO storage_id, storage_quantity;
+  IF storage_id IS NULL THEN
+    INSERT INTO storage(
+      product_id,
+      unit_id,
+      quantity,
+      created_at
+    ) VALUES(
+      product_id,
+      unit_id,
+      quantity,
+      NOW()
+    );
+  ELSE
+    UPDATE storage SET quantity = storage_quantity + quantity WHERE id = storage_id;
+  END IF;
+END
+
+CREATE PROCEDURE duocth_development.import_products(
+  IN distributor_id INT,
+  IN import_products TEXT
+)
+BEGIN
+  DECLARE i INT DEFAULT 0;
+  DECLARE n INT DEFAULT JSON_LENGTH(import_products);
+  DECLARE product_json JSON;
+  DECLARE total_price BIGINT DEFAULT 0;
+
+
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'An error occurred, please try again later';
+  END;
+
+  START TRANSACTION;
+    WHILE i < n DO
+      SET product_json = JSON_EXTRACT(import_products, CONCAT('$[', i, ']'));
+      CALL import_product(
+        JSON_UNQUOTE(JSON_EXTRACT(product_json, '$.product_id')),
+        distributor_id,
+        JSON_UNQUOTE(JSON_EXTRACT(product_json, '$.unit')),
+        JSON_UNQUOTE(JSON_EXTRACT(product_json, '$.quantity')),
+        JSON_UNQUOTE(JSON_EXTRACT(product_json, '$.price'))
+      );
+      SET total_price = total_price + JSON_UNQUOTE(JSON_EXTRACT(product_json, '$.price'));
+      SET i = i + 1;
+    END WHILE;
+    CALL system_log(1, 4, CONCAT('Nhập hàng từ nhà phân phối ', distributor_id, ' với tổng giá trị ', total_price));
+END

@@ -111,6 +111,19 @@ class StorageService {
     p.units = fixedUnits;
     return p;
   }
+  async importProduct(data) {
+    const listImport = data.listImport.replace(/\\/g, '');
+    const result = await db.raw(`
+      CALL import_products(
+        ${data.distributor_id},
+        '${listImport}'
+      );`)
+  }
+  async deleteImportData() {
+    // await db('import_histories').truncate();
+    // await db('storage').truncate();
+    // await db('system_logs').delete().where('logging_type_id', 4);
+  }
 }
 
 export default new StorageService();

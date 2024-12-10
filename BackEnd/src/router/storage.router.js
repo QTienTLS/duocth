@@ -15,6 +15,8 @@ router.post('/get-products', asyncHandler(storageController.getProducts));
 router.post('/delete-product', asyncHandler(storageController.deleteProduct));
 router.post('/update-product', asyncHandler(storageController.updateProduct));
 router.post('/get-product-import', asyncHandler(storageController.getProductImport));
+router.post('/import-product', asyncHandler(storageController.importProduct));
+router.get('/delete-import-data', asyncHandler(storageController.deleteImportData));
 
 
 export default router;

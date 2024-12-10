@@ -124,7 +124,7 @@ const displayValue = computed(() => {
 
 <style lang="scss" scoped>
 .panel-options {
-  height: 300px;
+  height: 200px;
   position: absolute;
   top: 40px;
   left: 0px;
@@ -147,13 +147,13 @@ const displayValue = computed(() => {
     opacity: 0;
   }
   to {
-    height: 300px;
+    height: 200px;
     opacity: 1;
   }
 }
 @keyframes closeSelect {
   0% {
-    height: 300px;
+    height: 200px;
     opacity: 1;
   }
   99% {

@@ -75,6 +75,22 @@ class StorageController {
     }
     return new OK('Lấy dữ liệu sản phẩm thành công',await storageService.getProductImport(id)).send(res);
   }
+  async importProduct(req, res) {
+    const data = req.body;
+    await storageService.importProduct(data);
+    return new OK('Nhập hàng thành công').send(res);
+  }
+  async deleteImportData(req, res) {
+    await storageService.deleteImportData();
+    return new OK('Xóa dữ liệu nhập hàng thành công').send(res);
+  }
+  async getStorageProducts(req, res) {
+    const data = req.body;
+    const pageNum = data.page_num||1;
+    const pageSize = data.page_size||10;
+    return new OK('Danh sách sản phẩm trong kho',await storageService.getStorageProducts(pageNum,pageSize)).send(res);
+  }
 }
+
 
 export default new StorageController();
