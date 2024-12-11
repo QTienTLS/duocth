@@ -1,6 +1,7 @@
 <template>
   <div class="relative mt-4">
     <label
+    v-show="label"
     @click="toggleSelect"
       class="absolute flex items-center font-normal z-40 left-[10px] transition-all duration-200"
       :class="model!=null&&(model&&mode=='single'||model.length>0)?'text-[13px] text-[#006c40] top-[-12px] h-[20px] bg-white z-10 px-2':'text-[#a1a1a1] h-full  text-[17px]'"

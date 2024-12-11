@@ -124,6 +124,30 @@ class StorageService {
     // await db('storage').truncate();
     // await db('system_logs').delete().where('logging_type_id', 4);
   }
+  async getStorageProducts(pageNum,pageSize){
+    const products = await db.raw(`
+      SELECT get_storage_products(
+        ${pageNum},
+        ${pageSize}
+      ) AS products;
+    `);
+    return products[0][0].products;
+  }
+  async setProductPrice(data){
+    const prices = JSON.stringify(data.prices).replace(/\\/g, '');
+    // console.log(`
+    //   CALL set_product_price(
+    //     ${data.product_id},
+    //     '${prices}',
+    //   );
+    // `);
+    
+    await db.raw(`
+      CALL set_product_prices(
+        ${data.product_id},
+        '${prices}');
+    `);
+  }
 }
 
 export default new StorageService();

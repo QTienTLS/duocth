@@ -164,7 +164,7 @@ DELIMITER $ $ CREATE PROCEDURE `add_unit`(unit_name VARCHAR(255)) RETURNS INT DE
 INSERT INTO
   units(name, created_at, updated_at)
 VALUES
-(unit_name, NOW(), NOW());
+  (unit_name, NOW(), NOW());
 
 RETURN 1;
 
@@ -245,7 +245,7 @@ INSERT INTO
     created_at
   )
 VALUES
-(userId, typeId, de, NOW());
+  (userId, typeId, de, NOW());
 
 RETURN 1;
 
@@ -265,30 +265,41 @@ SELECT
       'children',
       (
         SELECT
-          JSON_ARRAYAGG(JSON_OBJECT(
-            'id', b.id,
-            'name', b.name,
-            'icon', b.icon,
-            'quantity', (
-              SELECT
-                COUNT(*)
-              FROM
-                products p
-              WHERE
-                p.type_id = b.id
+          JSON_ARRAYAGG(
+            JSON_OBJECT(
+              'id',
+              b.id,
+              'name',
+              b.name,
+              'icon',
+              b.icon,
+              'quantity',
+              (
+                SELECT
+                  COUNT(*)
+                FROM
+                  products p
+                WHERE
+                  p.type_id = b.id
+              )
             )
-          ))
-        FROM types b
-        WHERE b.p_id = t.id
+          )
+        FROM
+          types b
+        WHERE
+          b.p_id = t.id
       )
-    ) 
+    )
   ) INTO types_tree
-  FROM types t
-  WHERE t.p_id IS NULL;
-  RETURN types_tree;
-END
+FROM
+  types t
+WHERE
+  t.p_id IS NULL;
 
-DROP IF EXISTS TABLE `product_units`;
+RETURN types_tree;
+
+END DROP IF EXISTS TABLE `product_units`;
+
 CREATE TABLE `product_units` (
   `product_id` int unsigned NOT NULL,
   `unit_from_id` int unsigned NOT NULL,
@@ -299,9 +310,7 @@ CREATE TABLE `product_units` (
   CONSTRAINT `product_units_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
   CONSTRAINT `product_units_unit_from_id_foreign` FOREIGN KEY (`unit_from_id`) REFERENCES `units` (`id`) ON DELETE CASCADE,
   CONSTRAINT `product_units_unit_to_id_foreign` FOREIGN KEY (`unit_to_id`) REFERENCES `units` (`id`) ON DELETE CASCADE
-)
-
-CREATE PROCEDURE duocth_development.add_product(
+) CREATE PROCEDURE duocth_development.add_product(
   IN name VARCHAR(255),
   IN description TEXT,
   IN images TEXT,
@@ -310,65 +319,83 @@ CREATE PROCEDURE duocth_development.add_product(
   IN distributor_id INT,
   IN type_id INT,
   IN units TEXT
-)
-BEGIN
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  BEGIN
-    ROLLBACK;
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'An error occurred, please try again later';
-  END;
+) BEGIN DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN ROLLBACK;
 
-  START TRANSACTION;
-    -- INSERT PRODUCT
-    DECLARE product_id INT;
-    INSERT INTO products(
-      name,
-      description,
-      images,
-      description_image,
-      company_id,
-      distributor_id,
-      type_id,
-      created_at
-    )
-    VALUES(
-      name,
-      description,
-      images,
-      description_image,
-      company_id,
-      distributor_id,
-      type_id,
-      NOW()
-    );
-    SET product_id = LAST_INSERT_ID();
-    DECLARE i INT DEFAULT 0;
-    DECLARE n INT DEFAULT JSON_LENGTH(units);
-    DECLARE unit_json TEXT;
+SIGNAL SQLSTATE '45000'
+SET
+  MESSAGE_TEXT = 'An error occurred, please try again later';
 
-    WHILE i < n DO 
-      SET unit_json = JSON_EXTRACT(units, CONCAT('$[', i, ']'));
-      INSERT INTO product_units(
-        product_id,
-        unit_from_id,
-        quantity_from,
-        unit_to_id,
-        quantity_to
-      )
-      VALUES(
-        product_id,
-        JSON_UNQUOTE(JSON_EXTRACT(unit_json, '$.idFrom')),
-        JSON_UNQUOTE(JSON_EXTRACT(unit_json, '$.quantityFrom')),
-        JSON_UNQUOTE(JSON_EXTRACT(unit_json, '$.idTo')),
-        JSON_UNQUOTE(JSON_EXTRACT(unit_json, '$.quantityTo'))
-      );
-      SET i = i + 1;
-    END WHILE;
-    CALL system_log(1, 1, CONCAT('Thêm mặt hàng ', name));
-  COMMIT;
-END
+END;
 
-DELETE TABLE IF EXISTS `storage`;
+START TRANSACTION;
+
+-- INSERT PRODUCT
+DECLARE product_id INT;
+
+INSERT INTO
+  products(
+    name,
+    description,
+    images,
+    description_image,
+    company_id,
+    distributor_id,
+    type_id,
+    created_at
+  )
+VALUES
+(
+    name,
+    description,
+    images,
+    description_image,
+    company_id,
+    distributor_id,
+    type_id,
+    NOW()
+  );
+
+SET
+  product_id = LAST_INSERT_ID();
+
+DECLARE i INT DEFAULT 0;
+
+DECLARE n INT DEFAULT JSON_LENGTH(units);
+
+DECLARE unit_json TEXT;
+
+WHILE i < n DO
+SET
+  unit_json = JSON_EXTRACT(units, CONCAT('$[', i, ']'));
+
+INSERT INTO
+  product_units(
+    product_id,
+    unit_from_id,
+    quantity_from,
+    unit_to_id,
+    quantity_to
+  )
+VALUES
+(
+    product_id,
+    JSON_UNQUOTE(JSON_EXTRACT(unit_json, '$.idFrom')),
+    JSON_UNQUOTE(JSON_EXTRACT(unit_json, '$.quantityFrom')),
+    JSON_UNQUOTE(JSON_EXTRACT(unit_json, '$.idTo')),
+    JSON_UNQUOTE(JSON_EXTRACT(unit_json, '$.quantityTo'))
+  );
+
+SET
+  i = i + 1;
+
+END WHILE;
+
+CALL system_log(1, 1, CONCAT('Thêm mặt hàng ', name));
+
+COMMIT;
+
+END DELETE TABLE IF EXISTS `storage`;
+
 CREATE TABLE `storage` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `product_id` int unsigned NOT NULL,
@@ -380,9 +407,7 @@ CREATE TABLE `storage` (
   INDEX `product_id` (`product_id`),
   CONSTRAINT `storage_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
   CONSTRAINT `storage_unit_id_foreign` FOREIGN KEY (`unit_id`) REFERENCES `units` (`id`) ON DELETE CASCADE
-)
-
-CREATE TABLE `import_histories` (
+) CREATE TABLE `import_histories` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `product_id` int unsigned NOT NULL,
   `distributor_id` int unsigned NOT NULL,
@@ -397,8 +422,7 @@ CREATE TABLE `import_histories` (
   CONSTRAINT `import_histories_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
   CONSTRAINT `import_histories_distributor_id_foreign` FOREIGN KEY (`distributor_id`) REFERENCES `distributors` (`id`) ON DELETE CASCADE,
   CONSTRAINT `import_histories_unit_id_foreign` FOREIGN KEY (`unit_id`) REFERENCES `units` (`id`) ON DELETE CASCADE
-)
-CREATE TABLE `price` (
+) CREATE TABLE `price` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `product_id` int unsigned NOT NULL,
   `unit_id` int unsigned NOT NULL,
@@ -410,77 +434,107 @@ CREATE TABLE `price` (
   INDEX `product_id` (`product_id`),
   CONSTRAINT `price_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
   CONSTRAINT `price_unit_id_foreign` FOREIGN KEY (`unit_id`) REFERENCES `units` (`id`) ON DELETE CASCADE
-)
+) CREATE FUNCTION duocth_development.get_product_import(product_id INT) RETURNS JSON BEGIN DECLARE r JSON;
 
-CREATE FUNCTION duocth_development.get_product_import( product_id INT )
-RETURNS JSON
-BEGIN
-	DECLARE r JSON;
-  DECLARE unit_obj JSON;
-  DECLARE quantity_by_unit JSON;
-  
+DECLARE unit_obj JSON;
 
-  SELECT JSON_ARRAYAGG(
-    JSON_OBJECT(
-      'id', u.id,
-      'name', u.name
-    )
+DECLARE quantity_by_unit JSON;
+
+SELECT
+  JSON_ARRAYAGG(
+    JSON_OBJECT('id', u.id, 'name', u.name)
   ) INTO unit_obj
-  FROM product_units pu JOIN units u ON pu.unit_from_id = u.id
-  WHERE pu.product_id = product_id;
+FROM
+  product_units pu
+  JOIN units u ON pu.unit_from_id = u.id
+WHERE
+  pu.product_id = product_id;
 
-  SELECT JSON_ARRAYAGG(
+SELECT
+  JSON_ARRAYAGG(
     JSON_OBJECT(
-      'from_id', pu.unit_from_id,
-      'to_id', pu.unit_to_id,
-      'from_name', u.name,
-      'to_name', u1.name,
-      'base_quantity', s.quantity,
-      'conversion_factor', pu.quantity_to / pu.quantity_from
+      'from_id',
+      pu.unit_from_id,
+      'to_id',
+      pu.unit_to_id,
+      'from_name',
+      u.name,
+      'to_name',
+      u1.name,
+      'base_quantity',
+      s.quantity,
+      'conversion_factor',
+      pu.quantity_to / pu.quantity_from
     )
   ) INTO quantity_by_unit
-  FROM product_units pu JOIN units u ON pu.unit_from_id = u.id JOIN units u1 ON pu.unit_to_id = u1.id
-  LEFT JOIN storage s ON s.product_id = pu.product_id AND s.unit_id = pu.unit_from_id
-  WHERE pu.product_id = product_id;
+FROM
+  product_units pu
+  JOIN units u ON pu.unit_from_id = u.id
+  JOIN units u1 ON pu.unit_to_id = u1.id
+  LEFT JOIN storage s ON s.product_id = pu.product_id
+  AND s.unit_id = pu.unit_from_id
+WHERE
+  pu.product_id = product_id;
 
-  SELECT JSON_OBJECT(
-    'units', unit_obj,
-    'quantity_by_unit', quantity_by_unit,
-    'product_name', p.name,
-    'product_id', p.id,
-    'image', p.description_image,
-    'description', p.description
+SELECT
+  JSON_OBJECT(
+    'units',
+    unit_obj,
+    'quantity_by_unit',
+    quantity_by_unit,
+    'product_name',
+    p.name,
+    'product_id',
+    p.id,
+    'image',
+    p.description_image,
+    'description',
+    p.description
   ) INTO r
-  FROM products p
-  WHERE p.id = product_id;
+FROM
+  products p
+WHERE
+  p.id = product_id;
 
-  RETURN r;
+RETURN r;
 
-END
-
-CREATE PROCEDURE duocth_development.import_product(
+END CREATE PROCEDURE duocth_development.import_product(
   IN product_id INT,
   IN distributor_id INT,
   IN unit_id INT,
   IN quantity INT,
   IN import_price BIGINT
-)
-BEGIN
-  DECLARE product_exist INT;
-  DECLARE storage_id INT;
-  DECLARE storage_quantity INT;
-  SELECT COUNT(*) FROM products WHERE id = product_id AND active = 1 INTO product_exist;
-  IF product_exist = 0 THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Mặt hàng không tồn tại hoặc đã bị xóa';
-  END IF;
-  INSERT INTO import_histories(
+) BEGIN DECLARE product_exist INT;
+
+DECLARE storage_id INT;
+
+DECLARE storage_quantity INT;
+
+SELECT
+  COUNT(*)
+FROM
+  products
+WHERE
+  id = product_id
+  AND active = 1 INTO product_exist;
+
+IF product_exist = 0 THEN SIGNAL SQLSTATE '45000'
+SET
+  MESSAGE_TEXT = 'Mặt hàng không tồn tại hoặc đã bị xóa';
+
+END IF;
+
+INSERT INTO
+  import_histories(
     product_id,
     distributor_id,
     unit_id,
     quantity,
     import_price,
     created_at
-  ) VALUES(
+  )
+VALUES
+(
     product_id,
     distributor_id,
     unit_id,
@@ -488,54 +542,276 @@ BEGIN
     import_price,
     NOW()
   );
-  -- Check if product exist in storage
-  SELECT id, quantity FROM storage WHERE product_id = product_id AND unit_id = unit_id INTO storage_id, storage_quantity;
-  IF storage_id IS NULL THEN
-    INSERT INTO storage(
-      product_id,
-      unit_id,
-      quantity,
-      created_at
-    ) VALUES(
-      product_id,
-      unit_id,
-      quantity,
-      NOW()
-    );
-  ELSE
-    UPDATE storage SET quantity = storage_quantity + quantity WHERE id = storage_id;
-  END IF;
-END
 
-CREATE PROCEDURE duocth_development.import_products(
+-- Check if product exist in storage
+SELECT
+  id,
+  quantity
+FROM
+  storage
+WHERE
+  product_id = product_id
+  AND unit_id = unit_id INTO storage_id,
+  storage_quantity;
+
+IF storage_id IS NULL THEN
+INSERT INTO
+  storage(
+    product_id,
+    unit_id,
+    quantity,
+    created_at
+  )
+VALUES
+(
+    product_id,
+    unit_id,
+    quantity,
+    NOW()
+  );
+
+ELSE
+UPDATE
+  storage
+SET
+  quantity = storage_quantity + quantity
+WHERE
+  id = storage_id;
+
+END IF;
+
+END CREATE PROCEDURE duocth_development.import_products(
   IN distributor_id INT,
   IN import_products TEXT
+) BEGIN DECLARE i INT DEFAULT 0;
+
+DECLARE n INT DEFAULT JSON_LENGTH(import_products);
+
+DECLARE product_json JSON;
+
+DECLARE total_price BIGINT DEFAULT 0;
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN ROLLBACK;
+
+SIGNAL SQLSTATE '45000'
+SET
+  MESSAGE_TEXT = 'An error occurred, please try again later';
+
+END;
+
+START TRANSACTION;
+
+WHILE i < n DO
+SET
+  product_json = JSON_EXTRACT(import_products, CONCAT('$[', i, ']'));
+
+CALL import_product(
+  JSON_UNQUOTE(JSON_EXTRACT(product_json, '$.product_id')),
+  distributor_id,
+  JSON_UNQUOTE(JSON_EXTRACT(product_json, '$.unit')),
+  JSON_UNQUOTE(JSON_EXTRACT(product_json, '$.quantity')),
+  JSON_UNQUOTE(JSON_EXTRACT(product_json, '$.price'))
+);
+
+SET
+  total_price = total_price + JSON_UNQUOTE(JSON_EXTRACT(product_json, '$.price'));
+
+SET
+  i = i + 1;
+
+END WHILE;
+
+CALL system_log(
+  1,
+  4,
+  CONCAT(
+    'Nhập hàng từ nhà phân phối ',
+    distributor_id,
+    ' với tổng giá trị ',
+    total_price
+  )
+);
+
+END 
+
+CREATE FUNCTION duocth_development.get_storage_products(page_num INT, page_size INT) RETURNS JSON DETERMINISTIC BEGIN DECLARE r JSON;
+
+DECLARE total INT;
+
+DECLARE product_list JSON;
+
+DECLARE offset_value INT;
+
+-- Tính giá trị OFFSET cho phân trang
+SET
+  offset_value = (page_num - 1) * page_size;
+
+-- Đếm tổng số sản phẩm (DISTINCT) có trạng thái `active = 1`
+SELECT
+  COUNT(DISTINCT s.product_id) INTO total
+FROM
+  storage s
+  JOIN products p ON s.product_id = p.id
+WHERE
+  p.active = 1;
+
+-- Truy vấn danh sách sản phẩm theo phân trang
+SELECT
+  JSON_ARRAYAGG(
+    JSON_OBJECT(
+      'id',
+      fp.id,
+      'name',
+      fp.name,
+      'image',
+      fp.description_image,
+      'unit',
+      (
+        SELECT
+          JSON_ARRAYAGG(
+            JSON_OBJECT(
+              'id',
+              u.id,
+              'name',
+              u.name,
+              'quantity',
+              s1.quantity
+            )
+          )
+        FROM
+          storage s1
+          JOIN units u ON s1.unit_id = u.id
+        WHERE
+          s1.product_id = fp.id
+      ),
+      'price',
+      (
+        SELECT
+          JSON_ARRAYAGG(
+            JSON_OBJECT(
+              'unit_id',
+              pr.unit_id,
+              'unit_name',
+              u1.name,
+              'price',
+              pr.price
+            )
+          )
+        FROM
+          price pr
+          JOIN units u1 ON pr.unit_id = u1.id
+        WHERE
+          pr.product_id = fp.id
+          AND pr.active = 1
+      ),
+      'average_import_price',
+      (
+        SELECT
+          JSON_OBJECT(
+            'unit_name',
+            u2.name,
+            'average_import_price',
+            ROUND(ih.import_price / ih.quantity)
+          )
+        FROM
+          import_histories ih
+          JOIN units u2 ON ih.unit_id = u2.id
+        WHERE
+          ih.product_id = fp.id
+        ORDER BY
+          ih.created_at DESC
+        LIMIT
+          1
+      )
+    )
+  ) INTO product_list
+FROM
+  (
+    SELECT
+      DISTINCT p.id,
+      p.name,
+      p.description_image,
+      (
+        SELECT
+          COUNT(1)
+        FROM
+          price pr
+        WHERE
+          pr.product_id = p.id
+          AND pr.active = 1
+          AND pr.price IS NOT NULL
+      ) AS price_count,
+      (
+        SELECT
+          MAX(s.created_at)
+        FROM
+          storage s
+        WHERE
+          s.product_id = p.id
+      ) AS max_created_at
+    FROM
+      products p
+      JOIN storage s ON s.product_id = p.id -- Chỉ lấy các sản phẩm có trong bảng storage
+    WHERE
+      p.active = 1
+    ORDER BY
+      price_count DESC,
+      max_created_at DESC
+    LIMIT
+      offset_value, page_size
+  ) AS fp;
+
+-- Gộp kết quả cuối cùng
+SELECT
+  JSON_OBJECT(
+    'total',
+    total,
+    'products',
+    product_list
+  ) INTO r;
+
+RETURN r;
+
+END;
+
+CREATE PROCEDURE duocth_development.set_product_prices(
+  IN pid INT,
+  IN prices TEXT
 )
 BEGIN
-  DECLARE i INT DEFAULT 0;
-  DECLARE n INT DEFAULT JSON_LENGTH(import_products);
-  DECLARE product_json JSON;
-  DECLARE total_price BIGINT DEFAULT 0;
+    DECLARE i INT DEFAULT 0;
+    DECLARE n INT DEFAULT JSON_LENGTH(prices);
+    DECLARE price_json JSON;
 
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'An error occurred, please try again later';
+    END;
 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  BEGIN
-    ROLLBACK;
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'An error occurred, please try again later';
-  END;
+    START TRANSACTION;
 
-  START TRANSACTION;
+    -- Cập nhật giá cũ về trạng thái `active = 0`
+    -- UPDATE price SET active = 0, stop_at = NOW() WHERE product_id = pid;
+
+    -- Thêm giá mới
     WHILE i < n DO
-      SET product_json = JSON_EXTRACT(import_products, CONCAT('$[', i, ']'));
-      CALL import_product(
-        JSON_UNQUOTE(JSON_EXTRACT(product_json, '$.product_id')),
-        distributor_id,
-        JSON_UNQUOTE(JSON_EXTRACT(product_json, '$.unit')),
-        JSON_UNQUOTE(JSON_EXTRACT(product_json, '$.quantity')),
-        JSON_UNQUOTE(JSON_EXTRACT(product_json, '$.price'))
-      );
-      SET total_price = total_price + JSON_UNQUOTE(JSON_EXTRACT(product_json, '$.price'));
-      SET i = i + 1;
+        SET price_json = JSON_EXTRACT(prices, CONCAT('$[', i, ']'));
+
+        INSERT INTO price(product_id, unit_id, price, active, using_from)
+        VALUES(
+            pid,
+            JSON_UNQUOTE(JSON_EXTRACT(price_json, '$.unit')),
+            JSON_UNQUOTE(JSON_EXTRACT(price_json, '$.price')),
+            1,
+            NOW()
+        );
+
+        SET i = i + 1;
     END WHILE;
-    CALL system_log(1, 4, CONCAT('Nhập hàng từ nhà phân phối ', distributor_id, ' với tổng giá trị ', total_price));
+
+    CALL system_log(1, 5, CONCAT('Cập nhật giá cho mặt hàng ', pid));
+
+    COMMIT;
 END

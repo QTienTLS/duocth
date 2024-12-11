@@ -90,6 +90,14 @@ class StorageController {
     const pageSize = data.page_size||10;
     return new OK('Danh sách sản phẩm trong kho',await storageService.getStorageProducts(pageNum,pageSize)).send(res);
   }
+  async setProductPrice(req, res) {
+    const data = req.body;
+    if(!data.product_id || !data.prices) {
+      throw new InternalServerError('Vui lòng nhập đầy đủ thông tin');
+    }
+    await storageService.setProductPrice(data);
+    return new OK('Cập nhật giá sản phẩm thành công').send(res);
+  }
 }
 
 

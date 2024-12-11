@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <img ref="image" 
-    :src="props.src" alt="Image"
+    :src="link||props.src" alt="Image"
     :class="{
       'w-full': props.fitWidth,
       'h-full': props.fitHeight,
@@ -14,11 +14,17 @@
 <script setup>
 import defaultImage from '@/assets/image/default-img.jpg';
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 const props = defineProps({
   src: String,
   fitWidth: Boolean,
   fitHeight: Boolean,
+});
+const link = ref(null);
+onMounted(() => {
+  if(!props.src.includes('http')) {
+  link.value = import.meta.env.VITE_API_URL+ '/images/' + props.src;
+}
 });
 const image = ref(null);
 const onError = () => {
